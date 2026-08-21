@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KICKS.UA — оригинальные кроссовки с доставкой по Украине</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+  :root{
+    --canvas:#EDE9E1;
+    --asphalt:#232320;
+    --sole:#8A8578;
+    --cone:#FF4B12;
+    --chalk:#FAF8F3;
+    --stitch:#C9C2B2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--canvas);color:var(--asphalt);font-family:'Archivo',sans-serif;overflow-x:hidden;}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--sole);}
+
+  .lace-divider{
+    height:26px;width:100%;
+    background-image: repeating-linear-gradient(-55deg, var(--asphalt) 0px, var(--asphalt) 3px, transparent 3px, transparent 22px);
+    opacity:0.85;
+  }
+
+  nav{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 6%;position:sticky;top:0;background:var(--canvas);
+    z-index:50;border-bottom:2px solid var(--asphalt);
+  }
+  .logo{font-family:'Archivo Black',sans-serif;font-size:22px;letter-spacing:-0.02em;text-decoration:none;color:var(--asphalt);}
+  .logo span{color:var(--cone);}
+  .nav-links{display:flex;gap:24px;align-items:center;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);letter-spacing:0.03em;}
+  .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;letter-spacing:0.05em;}
+  .nav-cta:hover{background:var(--cone);}
+
+  .catalog-head{padding:60px 6% 40px;}
+  .catalog-head .hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .catalog-head .dot{width:8px;height:8px;border-radius:50%;background:var(--cone);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .catalog-head h1{
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(38px,6vw,68px);
+    line-height:0.95;letter-spacing:-0.02em;margin-bottom:20px;
+  }
+  .catalog-head p{font-size:17px;color:#4a483f;max-width:480px;line-height:1.5;}
+
+  .trust-strip{
+    display:flex;justify-content:space-between;padding:20px 6%;
+    background:var(--asphalt);color:var(--chalk);flex-wrap:wrap;gap:14px;
+  }
+  .trust-strip div{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.03em;display:flex;align-items:center;gap:8px;}
+  .trust-strip div::before{content:"—";color:var(--cone);}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:2px;background:var(--stitch);
+    border-top:2px solid var(--asphalt);border-bottom:2px solid var(--asphalt);
+    margin:50px 6% 70px;
+  }
+  .card{
+    background:var(--chalk);padding:24px 20px 26px;text-decoration:none;color:var(--asphalt);
+    display:flex;flex-direction:column;transition:background 0.15s;position:relative;
+  }
+  .card:hover{background:#fff;}
+  .card .thumb{
+    width:100%;aspect-ratio:1/1;background:var(--canvas);
+    border:2px solid var(--asphalt);margin-bottom:16px;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .card .thumb img{width:100%;height:100%;object-fit:cover;}
+  .card .thumb .placeholder{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sole);text-align:center;padding:10px;}
+  .card h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .card .price{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--cone);margin-top:auto;padding-top:10px;font-weight:700;}
+  .card .price .old{text-decoration:line-through;color:var(--sole);font-size:12.5px;margin-right:6px;font-weight:400;}
+  .card .badge{
+    position:absolute;top:14px;right:14px;
+    background:var(--cone);color:var(--chalk);
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    padding:4px 8px;transform:rotate(4deg);
+  }
+
+  footer{
+    padding:34px 6%;display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:12px;
+  }
+  footer .logo{font-size:16px;}
+  footer .foot-links{display:flex;gap:22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+  footer .foot-links a{color:var(--asphalt);text-decoration:none;border-bottom:1px solid var(--stitch);}
+
+  @media (max-width:760px){
+    .trust-strip{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">KICKS<span>.UA</span></a>
+  <div class="nav-links">
+    <a href="delivery.html">Доставка</a>
+    <a href="https://t.me/твой_канал" class="nav-cta">Telegram →</a>
+  </div>
+</nav>
+
+<section class="catalog-head">
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    <span class="label">Оригинал · Nike · Adidas · New Balance</span>
+  </div>
+  <h1>Кроссовки,<br>которые узнают<br>с первого взгляда</h1>
+  <p>Только оригинальная обувь напрямую от дистрибьютора. Оплата при получении, обмен размера бесплатно.</p>
+</section>
+
+<div class="lace-divider"></div>
+
+<div class="trust-strip">
+  <div>Оплата при получении</div>
+  <div>Доставка Новой Почтой 1–3 дня</div>
+  <div>Обмен размера бесплатно</div>
+</div>
+
+<div class="grid">
+
+  <a href="product-1.html" class="card">
+    <span class="badge">−16%</span>
+    <div class="thumb"><div class="placeholder">ФОТО<br>Nike Air Max 90</div></div>
+    <h3>Nike Air Max 90</h3>
+    <div class="price"><span class="old">3 200 ₴</span>2 690 ₴</div>
+  </a>
+
+  <a href="product-2.html" class="card">
+    <div class="thumb"><div class="placeholder">ФОТО<br>Adidas Samba OG</div></div>
+    <h3>Adidas Samba OG</h3>
+    <div class="price">2 450 ₴</div>
+  </a>
+
+  <a href="product-3.html" class="card">
+    <span class="badge">−16%</span>
+    <div class="thumb"><div class="placeholder">ФОТО<br>New Balance 550</div></div>
+    <h3>New Balance 550</h3>
+    <div class="price"><span class="old">3 800 ₴</span>3 190 ₴</div>
+  </a>
+
+  <a href="#" class="card">
+    <div class="thumb"><div class="placeholder">ФОТО<br>Nike Dunk Low</div></div>
+    <h3>Nike Dunk Low</h3>
+    <div class="price">2 990 ₴</div>
+  </a>
+
+  <a href="#" class="card">
+    <div class="thumb"><div class="placeholder">ФОТО<br>Adidas Gazelle</div></div>
+    <h3>Adidas Gazelle</h3>
+    <div class="price">2 350 ₴</div>
+  </a>
+
+  <a href="#" class="card">
+    <div class="thumb"><div class="placeholder">+ 15 моделей<br>добавь по аналогии</div></div>
+    <h3 style="color:var(--sole)">Ещё модели</h3>
+    <div class="price" style="color:var(--sole)">скоро</div>
+  </a>
+
+</div>
+
+<footer>
+  <div class="logo">KICKS<span>.UA</span></div>
+  <div class="foot-links">
+    <a href="https://t.me/твой_канал">Telegram-канал</a>
+    <a href="delivery.html">Доставка и оплата</a>
+  </div>
+</footer>
+
+</body>
+</html>

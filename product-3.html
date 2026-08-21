@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Balance 550 — KICKS.UA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+  :root{
+    --canvas:#EDE9E1;--asphalt:#232320;--sole:#8A8578;--cone:#FF4B12;--chalk:#FAF8F3;--stitch:#C9C2B2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--canvas);color:var(--asphalt);font-family:'Archivo',sans-serif;overflow-x:hidden;}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--sole);}
+
+  .lace-divider{
+    height:26px;width:100%;
+    background-image: repeating-linear-gradient(-55deg, var(--asphalt) 0px, var(--asphalt) 3px, transparent 3px, transparent 22px);
+    opacity:0.85;
+  }
+
+  nav{
+    display:flex;justify-content:space-between;align-items:center;padding:22px 6%;
+    position:sticky;top:0;background:var(--canvas);z-index:50;border-bottom:2px solid var(--asphalt);
+  }
+  .logo{font-family:'Archivo Black',sans-serif;font-size:22px;letter-spacing:-0.02em;text-decoration:none;color:var(--asphalt);}
+  .logo span{color:var(--cone);}
+  .nav-links{display:flex;gap:24px;align-items:center;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
+  .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+  .nav-cta:hover{background:var(--cone);}
+
+  .breadcrumb{padding:16px 6% 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--sole);}
+  .breadcrumb a{text-decoration:none;color:var(--sole);border-bottom:1px solid var(--stitch);}
+
+  .hero{
+    display:grid;grid-template-columns:1fr 1.1fr;align-items:center;padding:40px 6% 50px;gap:40px;
+  }
+  .shoe-wrap{position:relative;display:flex;justify-content:center;align-items:center;}
+  .shoe-wrap .thumb{
+    width:100%;max-width:440px;aspect-ratio:1/1;background:var(--chalk);
+    border:2px solid var(--asphalt);display:flex;align-items:center;justify-content:center;
+  }
+  .shoe-wrap .placeholder{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--sole);text-align:center;padding:20px;}
+  .price-sticker{
+    position:absolute;top:6%;right:2%;background:var(--asphalt);color:var(--chalk);
+    font-family:'Archivo Black',sans-serif;width:88px;height:88px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transform:rotate(9deg);text-align:center;line-height:1.1;
+  }
+  .price-sticker span{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:500;}
+
+  h1{
+    font-family:'Archivo Black',sans-serif;font-size:clamp(34px,4.4vw,54px);
+    line-height:0.98;letter-spacing:-0.02em;margin:14px 0 18px;
+  }
+  .price-tag{display:inline-flex;align-items:baseline;gap:12px;margin-bottom:28px;}
+  .price-tag .old{font-family:'JetBrains Mono',monospace;text-decoration:line-through;color:var(--sole);font-size:17px;}
+  .price-tag .new{font-family:'Archivo Black',sans-serif;font-size:32px;color:var(--cone);}
+  .desc{font-size:16px;color:#4a483f;max-width:440px;margin-bottom:26px;line-height:1.55;}
+
+  .size-picker{margin-bottom:28px;}
+  .size-picker .label{margin-bottom:10px;display:block;}
+  .size-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .size-grid button{
+    min-width:48px;padding:11px 6px;border:2px solid var(--asphalt);background:var(--chalk);
+    font-family:'JetBrains Mono',monospace;font-size:13.5px;cursor:pointer;
+  }
+  .size-grid button:hover, .size-grid button.active{background:var(--asphalt);color:var(--chalk);}
+
+  .btn-primary{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:0.04em;
+    background:var(--cone);color:var(--chalk);padding:18px 34px;text-decoration:none;
+    border:2px solid var(--asphalt);box-shadow:6px 6px 0 var(--asphalt);
+    transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--asphalt);}
+
+  .trust-strip{
+    display:flex;justify-content:space-between;padding:20px 6%;background:var(--asphalt);color:var(--chalk);
+    flex-wrap:wrap;gap:14px;
+  }
+  .trust-strip div{font-family:'JetBrains Mono',monospace;font-size:13px;display:flex;align-items:center;gap:8px;}
+  .trust-strip div::before{content:"—";color:var(--cone);}
+
+  .order{
+    background:var(--chalk);padding:80px 6%;display:grid;grid-template-columns:1fr 1fr;gap:50px;
+    border-bottom:2px solid var(--asphalt);
+  }
+  .order-left h2{font-family:'Archivo Black',sans-serif;font-size:clamp(26px,3.4vw,38px);margin-bottom:20px;line-height:1.05;}
+  .order-left p{color:#4a483f;line-height:1.6;margin-bottom:24px;max-width:420px;}
+  .steps{list-style:none;}
+  .steps li{display:flex;gap:14px;margin-bottom:16px;font-size:14.5px;}
+  .steps li .n{font-family:'JetBrains Mono',monospace;color:var(--cone);font-weight:700;min-width:22px;}
+
+  form{background:var(--canvas);border:2px solid var(--asphalt);padding:34px;}
+  form .label{margin-bottom:6px;display:block;}
+  form input, form select{
+    width:100%;padding:13px 14px;margin-bottom:18px;border:1.5px solid var(--asphalt);
+    background:var(--chalk);font-family:'Archivo',sans-serif;font-size:14px;
+  }
+  form input:focus, form select:focus{outline:2px solid var(--cone);outline-offset:1px;}
+  form button{
+    width:100%;padding:16px;background:var(--asphalt);color:var(--chalk);border:none;
+    font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.04em;cursor:pointer;
+  }
+  form button:hover{background:var(--cone);}
+  form .note{font-size:12px;color:var(--sole);margin-top:12px;text-align:center;}
+
+  footer{
+    padding:34px 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  }
+  footer .logo{font-size:16px;}
+  footer .foot-links{display:flex;gap:22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+  footer .foot-links a{color:var(--asphalt);text-decoration:none;border-bottom:1px solid var(--stitch);}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr;}
+    .order{grid-template-columns:1fr;}
+    .trust-strip{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">KICKS<span>.UA</span></a>
+  <div class="nav-links">
+    <a href="index.html">Каталог</a>
+    <a href="#заказ" class="nav-cta">Заказать →</a>
+  </div>
+</nav>
+
+<div class="breadcrumb"><a href="index.html">Каталог</a> / New Balance 550</div>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="label">New Balance · Оригинал</span>
+    <h1>550</h1>
+    <div class="price-tag">
+      <span class="old">3 800 ₴</span>
+      <span class="new">3 190 ₴</span>
+    </div>
+    <p class="desc">Ретро-баскетбольный силуэт 80-х, вернувшийся в тренды. Кожаный верх, узнаваемая форма подошвы, сочетается с повседневной одеждой.</p>
+
+    <div class="size-picker">
+      <span class="label">Размер (EU)</span>
+      <div class="size-grid">
+    <button>40</button><button>41</button><button>42</button>
+        <button class="active">43</button><button>44</button><button>45</button>
+      </div>
+    </div>
+
+    <a href="#заказ" class="btn-primary">ОФОРМИТЬ ЗАКАЗ</a>
+  </div>
+
+  <div class="shoe-wrap">
+    <div class="price-sticker">−16%<span>сегодня</span></div>
+    <div class="thumb"><div class="placeholder">ГЛАВНОЕ ФОТО<br>New Balance 550<br>(вставь своё фото)</div></div>
+  </div>
+</section>
+
+<div class="lace-divider"></div>
+
+<div class="trust-strip">
+  <div>Оригинал, документы от дистрибьютора</div>
+  <div>Оплата при получении</div>
+  <div>Обмен размера бесплатно</div>
+</div>
+
+<section class="order" id="заказ">
+  <div class="order-left">
+    <h2>Оформи заказ —<br>мы перезвоним<br>в течение часа</h2>
+    <p>Заполни форму, менеджер уточнит размер и адрес отделения Новой Почты. Оплата — при получении.</p>
+    <ul class="steps">
+      <li><span class="n">01</span> Оставляешь заявку</li>
+      <li><span class="n">02</span> Подтверждаем размер по телефону</li>
+      <li><span class="n">03</span> Отправляем в течение 24 часов</li>
+    </ul>
+  </div>
+
+  <form onsubmit="event.preventDefault(); alert('Заявка принята! (пока демо — подключи Google Форму, см. инструкцию)');">
+    <span class="label">Имя</span>
+    <input type="text" placeholder="Как к вам обращаться" required>
+
+    <span class="label">Телефон</span>
+    <input type="tel" placeholder="+380 __ ___ __ __" required>
+
+    <span class="label">Размер</span>
+    <select required>
+      <option value="">Выбрать размер</option>
+      <option>40</option><option>41</option><option>42</option>
+      <option>43</option><option>44</option><option>45</option>
+    </select>
+
+    <button type="submit">ПОДТВЕРДИТЬ ЗАКАЗ — 3 190 ₴</button>
+    <p class="note">Нажимая кнопку, вы соглашаетесь на обработку данных</p>
+  </form>
+</section>
+
+<footer>
+  <div class="logo">KICKS<span>.UA</span></div>
+  <div class="foot-links">
+    <a href="index.html">Каталог</a>
+    <a href="delivery.html">Доставка и оплата</a>
+  </div>
+</footer>
+
+</body>
+</html>
