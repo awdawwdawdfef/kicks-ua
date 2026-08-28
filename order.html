@@ -194,9 +194,9 @@
       <legend>Оплата</legend>
       <span class="label">Спосіб оплати</span>
       <select name="payment" required>
-        <option value="">Оберіть спосіб оплати</option>
+        <option value=""> Спосіб оплати</option>
         <option value="Накладений платіж (оплата при отриманні)">Накладений платіж (оплата при отриманні)</option>
-        <option value="Оплата на картку заздалегідь">Оплата на картку заздалегідь</option>
+       
       </select>
     </fieldset>
 
@@ -252,7 +252,7 @@
   });
 
   // ==== ВАЖЛИВО: встав сюди адресу свого Cloudflare Worker (див. інструкцію) ====
-  const NOVA_POSHTA_PROXY = "https://твій-worker.workers.dev";
+  const NOVA_POSHTA_PROXY = "https://nova-poshta.prokopenkoivan083.workers.dev";
 
   const cityInput = document.getElementById('cityInput');
   const cityDatalist = document.getElementById('cityDatalist');
