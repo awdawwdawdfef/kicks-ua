@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,6 @@
   .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
   .nav-cta:hover{background:var(--cone);}
 
-  /* promo banner */
   .promo-banner{
     background:var(--asphalt);color:var(--chalk);
     padding:10px 6%;display:flex;justify-content:center;gap:10px;align-items:center;
@@ -51,10 +50,7 @@
   }
   .catalog-head p{font-size:16.5px;color:#4a483f;max-width:480px;line-height:1.5;}
 
-  /* brand filter tabs (visual only) */
-  .brand-tabs{
-    display:flex;gap:10px;padding:0 6% 34px;flex-wrap:wrap;
-  }
+  .brand-tabs{display:flex;gap:10px;padding:0 6% 34px;flex-wrap:wrap;}
   .brand-tabs span{
     font-family:'JetBrains Mono',monospace;font-size:12.5px;
     border:1.5px solid var(--asphalt);padding:8px 16px;letter-spacing:0.03em;
@@ -96,16 +92,12 @@
     padding:4px 8px;transform:rotate(4deg);
   }
 
-  /* about / trust section on index */
   .about{padding:70px 6%;}
-  .about-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    border-top:1px solid var(--stitch);
-  }
+  .about-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--stitch);}
   .about-card{padding:28px 24px;border-right:1px solid var(--stitch);border-bottom:1px solid var(--stitch);}
   .about-card:last-child{border-right:none;}
   .about-card .num{font-family:'JetBrains Mono',monospace;color:var(--cone);font-size:12.5px;display:block;margin-bottom:12px;}
-  .about-card h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:18px;margin-bottom:8px;}
+  .about-card h3{font-weight:700;font-size:18px;margin-bottom:8px;}
   .about-card p{font-size:14px;color:#5a584e;line-height:1.5;}
   .section-head{margin-bottom:36px;}
   .section-head h2{font-family:'Archivo Black',sans-serif;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.01em;}
@@ -118,7 +110,6 @@
   footer .foot-links{display:flex;gap:20px;font-family:'JetBrains Mono',monospace;font-size:12px;}
   footer .foot-links a{color:var(--asphalt);text-decoration:none;border-bottom:1px solid var(--stitch);}
 
-  /* product page */
   .breadcrumb{padding:16px 6% 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sole);}
   .breadcrumb a{text-decoration:none;color:var(--sole);border-bottom:1px solid var(--stitch);}
   .hero{display:grid;grid-template-columns:1fr 1.1fr;align-items:center;padding:36px 6% 46px;gap:36px;}
@@ -158,38 +149,64 @@
   }
   .btn-primary:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--asphalt);}
 
-  .order{
-    background:var(--chalk);padding:70px 6%;display:grid;grid-template-columns:1fr 1fr;gap:46px;
-    border-bottom:2px solid var(--asphalt);
-  }
-  .order-left h2{font-family:'Archivo Black',sans-serif;font-size:clamp(24px,3.2vw,36px);margin-bottom:18px;line-height:1.05;}
-  .order-left p{color:#4a483f;line-height:1.6;margin-bottom:22px;max-width:420px;}
-  .steps{list-style:none;}
-  .steps li{display:flex;gap:14px;margin-bottom:14px;font-size:14px;}
-  .steps li .n{font-family:'JetBrains Mono',monospace;color:var(--cone);font-weight:700;min-width:22px;}
-  form{background:var(--canvas);border:2px solid var(--asphalt);padding:30px;}
-  form .label{margin-bottom:6px;display:block;}
-  form input, form select{
-    width:100%;padding:12px 13px;margin-bottom:16px;border:1.5px solid var(--asphalt);
-    background:var(--chalk);font-family:'Archivo',sans-serif;font-size:14px;
-  }
-  form input:focus, form select:focus{outline:2px solid var(--cone);outline-offset:1px;}
-  form button{
-    width:100%;padding:15px;background:var(--asphalt);color:var(--chalk);border:none;
-    font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.04em;cursor:pointer;
-  }
-  form button:hover{background:var(--cone);}
-  form .note{font-size:11.5px;color:var(--sole);margin-top:12px;text-align:center;}
-
   .related{padding:16px 6% 60px;}
   .related h2{font-family:'Archivo Black',sans-serif;font-size:22px;padding:30px 0 20px;}
 
+  /* ===== ORDER PAGE ===== */
+  .order-page{padding:40px 6% 80px;max-width:640px;}
+  .order-page h1{
+    font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4.4vw,48px);
+    letter-spacing:-0.02em;margin-bottom:10px;line-height:1.02;
+  }
+  .order-page > p.sub{color:var(--sole);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:36px;}
+  form.order-form{background:var(--chalk);border:2px solid var(--asphalt);padding:32px;}
+  form.order-form fieldset{border:none;margin-bottom:26px;padding:0;}
+  form.order-form legend{
+    font-family:'Archivo Black',sans-serif;font-size:16px;margin-bottom:14px;padding:0;
+  }
+  form.order-form .label{margin-bottom:6px;display:block;}
+  form.order-form input, form.order-form select, form.order-form textarea{
+    width:100%;padding:13px 14px;margin-bottom:16px;border:1.5px solid var(--asphalt);
+    background:var(--canvas);font-family:'Archivo',sans-serif;font-size:14.5px;
+  }
+  form.order-form textarea{resize:vertical;min-height:70px;}
+  form.order-form input:focus, form.order-form select:focus, form.order-form textarea:focus{
+    outline:2px solid var(--cone);outline-offset:1px;
+  }
+  form.order-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  form.order-form button{
+    width:100%;padding:17px;background:var(--asphalt);color:var(--chalk);border:none;
+    font-family:'JetBrains Mono',monospace;font-size:14.5px;letter-spacing:0.04em;cursor:pointer;
+  }
+  form.order-form button:hover{background:var(--cone);}
+  form.order-form .note{font-size:11.5px;color:var(--sole);margin-top:14px;text-align:center;}
+  .conditional-field{display:none;}
+  .conditional-field.visible{display:block;}
+
+  /* ===== DELIVERY PAGE ===== */
+  .methods{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:2px;background:var(--stitch);
+    border-top:2px solid var(--asphalt);border-bottom:2px solid var(--asphalt);
+    margin:0 6% 60px;
+  }
+  .method{background:var(--chalk);padding:26px 22px;}
+  .method .tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cone);margin-bottom:10px;display:block;}
+  .method h3{font-size:17px;font-weight:700;margin-bottom:8px;}
+  .method p{font-size:13.5px;color:#5a584e;line-height:1.5;}
+  .block{padding:0 6% 40px;max-width:640px;}
+  .block h3{font-family:'Archivo Black',sans-serif;font-size:20px;margin-bottom:10px;}
+  .block p{color:#4a483f;line-height:1.6;white-space:pre-line;}
+  .block.warn{background:var(--asphalt);color:var(--chalk);padding:26px 6%;max-width:none;margin-bottom:40px;}
+  .block.warn h3{color:var(--cone);}
+  .block.warn p{color:var(--chalk);}
+
   @media (max-width:760px){
     .hero{grid-template-columns:1fr;}
-    .order{grid-template-columns:1fr;}
     .trust-strip{flex-direction:column;}
     .about-grid{grid-template-columns:1fr;}
     .about-card{border-right:none;}
+    form.order-form .row2{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -200,25 +217,25 @@
   <div class="nav-links">
     <a href="index.html">Каталог</a>
     <a href="delivery.html">Доставка</a>
-    <a href="#заказ" class="nav-cta">Заказать →</a>
+    <a href="order.html" class="nav-cta">Замовити →</a>
   </div>
 </nav>
-<div class="promo-banner">🔥 <span class="cone-text">Скидка недели</span> — до −16% на топ-модели · оплата при получении · доставка по всей Украине</div>
+<div class="promo-banner">🔥 <span class="cone-text">Знижка тижня</span> — до −16% на топ-моделі · оплата при отриманні · доставка по всій Україні</div>
 
 <div class="breadcrumb"><a href="index.html">Каталог</a> / New Balance 550</div>
 
 <section class="hero">
   <div class="hero-copy">
-    <span class="label">New Balance · Оригинал</span>
+    <span class="label">New Balance · Оригінал</span>
     <h1 class="product-title">550</h1>
     <div class="price-tag">
       <span class="old">3 800 ₴</span>
       <span class="new">3 190 ₴</span>
     </div>
-    <p class="desc">Ретро-баскетбольный силуэт 80-х, вернувшийся в тренды. Кожаный верх, узнаваемая форма подошвы, сочетается с повседневной одеждой.</p>
+    <p class="desc">Ретро-баскетбольний силует 80-х, що повернувся в тренди. Шкіряний верх, впізнавана форма підошви, поєднується з повсякденним одягом.</p>
 
     <div class="size-picker">
-      <span class="label">Размер (EU)</span>
+      <span class="label">Розмір (EU)</span>
       <div class="size-grid">
         <button>40</button>
         <button>41</button>
@@ -229,11 +246,11 @@
       </div>
     </div>
 
-    <a href="#заказ" class="btn-primary">ОФОРМИТЬ ЗАКАЗ</a>
+    <a href="order.html?product=New+Balance+550&price=3190" class="btn-primary">ОФОРМИТИ ЗАМОВЛЕННЯ</a>
   </div>
 
   <div class="shoe-wrap">
-    <div class="price-sticker">−16%<span>сегодня</span></div>
+    <div class="price-sticker">−16%<span>сьогодні</span></div>
     <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
       <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#F2F0EA" stroke="#232320" stroke-width="4"/>
@@ -258,51 +275,13 @@
 <div class="lace-divider"></div>
 
 <div class="trust-strip">
-  <div>Оригинал, документы от дистрибьютора</div>
-  <div>Оплата при получении</div>
-  <div>Обмен размера бесплатно</div>
+  <div>Оригінал, документи від дистриб'ютора</div>
+  <div>Оплата при отриманні</div>
+  <div>Обмін розміру безкоштовно</div>
 </div>
 
-<section class="order" id="заказ">
-  <div class="order-left">
-    <h2>Оформи заказ —<br>мы перезвоним<br>в течение часа</h2>
-    <p>Заполни форму, менеджер уточнит размер и адрес отделения для доставки. Оплата — при получении.</p>
-    <ul class="steps">
-      <li><span class="n">01</span> Оставляешь заявку</li>
-      <li><span class="n">02</span> Подтверждаем размер по телефону</li>
-      <li><span class="n">03</span> Отправляем в течение 24 часов</li>
-    </ul>
-  </div>
-
-  <form onsubmit="event.preventDefault(); alert('Заявка принята! (демо — подключи Google Форму по инструкции)');">
-    <span class="label">Имя</span>
-    <input type="text" placeholder="Как к вам обращаться" required>
-
-    <span class="label">Телефон</span>
-    <input type="tel" placeholder="+380 __ ___ __ __" required>
-
-    <span class="label">Способ доставки</span>
-    <select required>
-      <option value="">Выбрать способ</option>
-      <option>Новая почта — отделение</option>
-      <option>Новая почта — почтомат</option>
-      <option>Укрпошта</option>
-      <option>Курьером по городу</option>
-    </select>
-
-    <span class="label">Размер</span>
-    <select required>
-      <option value="">Выбрать размер</option>
-      <option>40</option><option>41</option><option>42</option><option>43</option><option>44</option><option>45</option>
-    </select>
-
-    <button type="submit">ПОДТВЕРДИТЬ ЗАКАЗ — 3 190 ₴</button>
-    <p class="note">Нажимая кнопку, вы соглашаетесь на обработку данных</p>
-  </form>
-</section>
-
 <section class="related">
-  <h2>Похожие модели</h2>
+  <h2>Схожі моделі</h2>
   <div class="grid">
   <a href="product-1.html" class="card">
     <span class="badge">−16%</span>
@@ -355,7 +334,7 @@
   </a>
 
   <a href="product-4.html" class="card">
-    <span class="badge">ХИТ</span>
+    <span class="badge">ХІТ</span>
     <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
       <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#FDFDFD" stroke="#232320" stroke-width="4"/>
@@ -384,8 +363,8 @@
 <footer>
   <div class="logo">KICKS<span>.UA</span></div>
   <div class="foot-links">
-    <a href="https://t.me/твой_канал">Telegram-канал</a>
-    <a href="delivery.html">Доставка и оплата</a>
+    <a href="https://t.me/твій_нік_тут">Telegram-канал</a>
+    <a href="delivery.html">Доставка і оплата</a>
   </div>
 </footer>
 

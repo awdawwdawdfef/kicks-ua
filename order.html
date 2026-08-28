@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оформлення замовлення — KICKS.UA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  :root{
+    --canvas:#EDE9E1;--asphalt:#232320;--sole:#8A8578;--cone:#FF4B12;--chalk:#FAF8F3;--stitch:#C9C2B2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--canvas);color:var(--asphalt);font-family:'Archivo',sans-serif;}
+  a{color:inherit;}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--sole);}
+  nav{
+    display:flex;justify-content:space-between;align-items:center;padding:20px 6%;
+    position:sticky;top:0;background:var(--canvas);z-index:50;border-bottom:2px solid var(--asphalt);
+  }
+  .logo{font-family:'Archivo Black',sans-serif;font-size:21px;text-decoration:none;color:var(--asphalt);}
+  .logo span{color:var(--cone);}
+  .nav-links{display:flex;gap:22px;align-items:center;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
+  .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+
+  .order-page{padding:40px 6% 80px;max-width:640px;}
+  .order-page h1{
+    font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4.4vw,48px);
+    letter-spacing:-0.02em;margin-bottom:10px;line-height:1.02;
+  }
+  .order-page > p.sub{color:var(--sole);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:12px;}
+  .order-summary{
+    background:var(--asphalt);color:var(--chalk);padding:16px 20px;margin-bottom:28px;
+    font-family:'JetBrains Mono',monospace;font-size:13.5px;display:none;
+  }
+  .order-summary.visible{display:block;}
+  .order-summary .cone-text{color:var(--cone);font-weight:700;}
+
+  form.order-form{background:var(--chalk);border:2px solid var(--asphalt);padding:32px;}
+  form.order-form fieldset{border:none;margin-bottom:26px;padding:0;}
+  form.order-form legend{font-family:'Archivo Black',sans-serif;font-size:16px;margin-bottom:14px;padding:0;}
+  form.order-form .label{margin-bottom:6px;display:block;}
+  form.order-form input, form.order-form select, form.order-form textarea{
+    width:100%;padding:13px 14px;margin-bottom:16px;border:1.5px solid var(--asphalt);
+    background:var(--canvas);font-family:'Archivo',sans-serif;font-size:14.5px;
+  }
+  form.order-form textarea{resize:vertical;min-height:70px;}
+  form.order-form input:focus, form.order-form select:focus, form.order-form textarea:focus{
+    outline:2px solid var(--cone);outline-offset:1px;
+  }
+  form.order-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  form.order-form button{
+    width:100%;padding:17px;background:var(--asphalt);color:var(--chalk);border:none;
+    font-family:'JetBrains Mono',monospace;font-size:14.5px;letter-spacing:0.04em;cursor:pointer;
+  }
+  form.order-form button:hover{background:var(--cone);}
+  form.order-form button:disabled{opacity:0.6;cursor:not-allowed;}
+  form.order-form .note{font-size:11.5px;color:var(--sole);margin-top:14px;text-align:center;}
+  form.order-form .hint{font-size:11.5px;color:var(--sole);margin-top:-10px;margin-bottom:16px;display:block;}
+  .conditional-field{display:none;}
+  .conditional-field.visible{display:block;}
+
+  .error-box{
+    display:none;background:#F4D9D3;border:2px solid #B23A2E;color:#7A2A20;
+    padding:14px 16px;margin-bottom:20px;font-size:13.5px;line-height:1.5;
+  }
+  .error-box.visible{display:block;}
+
+  /* success screen */
+  .success-box{
+    display:none;background:var(--chalk);border:2px solid var(--asphalt);padding:40px 32px;text-align:left;
+  }
+  .success-box.visible{display:block;}
+  .success-box .check{
+    width:52px;height:52px;border-radius:50%;background:var(--cone);color:var(--chalk);
+    display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;
+  }
+  .success-box h2{font-family:'Archivo Black',sans-serif;font-size:26px;margin-bottom:10px;}
+  .success-box p{color:#4a483f;line-height:1.6;margin-bottom:18px;}
+  .success-summary{
+    background:var(--canvas);border:1.5px solid var(--stitch);padding:16px 18px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;margin-bottom:20px;white-space:pre-line;
+  }
+  .success-box a.btn-back{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13.5px;
+    background:var(--asphalt);color:var(--chalk);padding:13px 24px;text-decoration:none;
+  }
+
+  @media (max-width:760px){
+    form.order-form .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">KICKS<span>.UA</span></a>
+  <div class="nav-links">
+    <a href="index.html">Каталог</a>
+    <a href="delivery.html">Доставка</a>
+  </div>
+</nav>
+
+<section class="order-page">
+  <span class="label">Крок останній</span>
+  <h1>Оформлення<br>замовлення</h1>
+  <p class="sub" id="subText">Заповни форму — менеджер зателефонує протягом години для підтвердження.</p>
+
+  <div class="order-summary" id="orderSummary">
+    Обрана модель: <span class="cone-text" id="summaryProduct">—</span><br>
+    Ціна: <span class="cone-text" id="summaryPrice">—</span> ₴
+  </div>
+
+  <div class="error-box" id="errorBox">
+    Не вдалося надіслати заявку автоматично. Зателефонуй, будь ласка, напряму — або спробуй ще раз за хвилину.
+  </div>
+
+  <form class="order-form" id="orderForm">
+
+    <fieldset>
+      <legend>Контактні дані</legend>
+      <div class="row2">
+        <div>
+          <span class="label">Ім'я</span>
+          <input type="text" name="firstName" placeholder="Ім'я" required>
+        </div>
+        <div>
+          <span class="label">Прізвище</span>
+          <input type="text" name="lastName" placeholder="Прізвище" required>
+        </div>
+      </div>
+      <span class="label">Телефон</span>
+      <input type="tel" name="phone" placeholder="+380 __ ___ __ __" required>
+
+      <span class="label">Модель взуття</span>
+      <select name="product" id="productSelect" required>
+        <option value="">Оберіть модель</option>
+        <option value="Nike Air Max 90">Nike Air Max 90 — 2 690 ₴</option>
+        <option value="Adidas Samba OG">Adidas Samba OG — 2 450 ₴</option>
+        <option value="New Balance 550">New Balance 550 — 3 190 ₴</option>
+        <option value="Nike Dunk Low">Nike Dunk Low — 2 990 ₴</option>
+        <option value="Adidas Gazelle">Adidas Gazelle — 2 350 ₴</option>
+        <option value="New Balance 9060">New Balance 9060 — 3 990 ₴</option>
+      </select>
+
+      <span class="label">Розмір (EU)</span>
+      <select name="size" required>
+        <option value="">Оберіть розмір</option>
+        <option>38</option><option>39</option><option>40</option>
+        <option>41</option><option>42</option><option>43</option>
+        <option>44</option><option>45</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Доставка</legend>
+
+      <span class="label">Місто</span>
+      <input type="text" name="city" id="cityInput" list="cityDatalist" placeholder="Почни вводити назву міста..." autocomplete="off" required>
+      <datalist id="cityDatalist"></datalist>
+      <span class="hint" id="cityHint"></span>
+
+      <span class="label">Служба доставки</span>
+      <select name="carrier" id="carrierSelect" required>
+        <option value="">Оберіть службу</option>
+        <option value="Нова пошта">Нова пошта</option>
+        <option value="Укрпошта">Укрпошта</option>
+      </select>
+
+      <span class="label">Тип отримання</span>
+      <select name="deliveryType" id="deliveryTypeSelect" required>
+        <option value="">Оберіть тип отримання</option>
+        <option value="У відділення">У відділення</option>
+        <option value="У поштомат">У поштомат</option>
+        <option value="Кур'єром за адресою">Кур'єром за адресою</option>
+      </select>
+
+      <div class="conditional-field" id="branchField">
+        <span class="label">Відділення / поштомат</span>
+        <select name="branchNumber" id="branchSelect">
+          <option value="">Спочатку вкажи місто вище</option>
+        </select>
+        <input type="text" name="branchManual" id="branchManualInput" placeholder="Впиши номер відділення вручну" style="display:none;">
+        <span class="hint" id="branchHint"></span>
+      </div>
+
+      <div class="conditional-field" id="addressField">
+        <span class="label">Адреса доставки</span>
+        <textarea name="address" placeholder="Вулиця, будинок, квартира"></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Оплата</legend>
+      <span class="label">Спосіб оплати</span>
+      <select name="payment" required>
+        <option value="">Оберіть спосіб оплати</option>
+        <option value="Накладений платіж (оплата при отриманні)">Накладений платіж (оплата при отриманні)</option>
+        <option value="Оплата на картку заздалегідь">Оплата на картку заздалегідь</option>
+      </select>
+    </fieldset>
+
+    <button type="submit" id="submitBtn">ПІДТВЕРДИТИ ЗАМОВЛЕННЯ</button>
+    <p class="note">Після натискання заявка одразу прийде власнику магазину — нікуди переходити не потрібно</p>
+    <p class="note">Натискаючи кнопку, ви погоджуєтесь на обробку персональних даних</p>
+  </form>
+
+  <div class="success-box" id="successBox">
+    <div class="check">✓</div>
+    <h2>Заявку прийнято!</h2>
+    <p>Менеджер зателефонує тобі протягом години для підтвердження замовлення. Ось що ми отримали:</p>
+    <div class="success-summary" id="successSummary"></div>
+    <a href="index.html" class="btn-back">← Повернутись до каталогу</a>
+  </div>
+</section>
+
+<script>
+  // ==== ВАЖЛИВО: встав сюди свій Formspree endpoint (див. інструкцію) ====
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/ВАШ_ID_ТУТ";
+
+  const priceMap = {
+    'Nike Air Max 90': '2690',
+    'Adidas Samba OG': '2450',
+    'New Balance 550': '3190',
+    'Nike Dunk Low': '2990',
+    'Adidas Gazelle': '2350',
+    'New Balance 9060': '3990'
+  };
+
+  // Prefill from URL params (?product=Nike+Air+Max+90&price=2690)
+  const params = new URLSearchParams(window.location.search);
+  const productParam = params.get('product');
+  const priceParam = params.get('price');
+  if (productParam) {
+    const select = document.getElementById('productSelect');
+    for (const opt of select.options) {
+      if (opt.value === productParam) { opt.selected = true; break; }
+    }
+    document.getElementById('summaryProduct').textContent = productParam;
+    document.getElementById('summaryPrice').textContent = priceParam || '—';
+    document.getElementById('orderSummary').classList.add('visible');
+  }
+
+  document.getElementById('productSelect').addEventListener('change', function(){
+    if (this.value) {
+      document.getElementById('summaryProduct').textContent = this.value;
+      document.getElementById('summaryPrice').textContent = priceMap[this.value] || '—';
+      document.getElementById('orderSummary').classList.add('visible');
+    } else {
+      document.getElementById('orderSummary').classList.remove('visible');
+    }
+  });
+
+  // ==== ВАЖЛИВО: встав сюди адресу свого Cloudflare Worker (див. інструкцію) ====
+  const NOVA_POSHTA_PROXY = "https://твій-worker.workers.dev";
+
+  const cityInput = document.getElementById('cityInput');
+  const cityDatalist = document.getElementById('cityDatalist');
+  const cityHint = document.getElementById('cityHint');
+  const branchSelect = document.getElementById('branchSelect');
+  const branchManualInput = document.getElementById('branchManualInput');
+  const branchHint = document.getElementById('branchHint');
+
+  let cityRefMap = {};   // "Дніпро" -> "ref-xxxx"
+  let cityDebounceTimer = null;
+  const proxyConfigured = !NOVA_POSHTA_PROXY.includes('твій-worker');
+
+  if (!proxyConfigured) {
+    cityHint.textContent = 'Автопідбір міста вимкнено — власник сайту ще не підключив Nova Poshta API. Просто впиши назву міста вручну.';
+    branchSelect.style.display = 'none';
+    branchManualInput.style.display = 'block';
+    branchManualInput.name = 'branchNumber';
+  }
+
+  cityInput.addEventListener('input', function () {
+    if (!proxyConfigured) return;
+    const value = this.value.trim();
+    clearTimeout(cityDebounceTimer);
+    branchSelect.innerHTML = '<option value="">Спочатку обери місто зі списку</option>';
+    cityHint.textContent = '';
+
+    if (value.length < 2) return;
+
+    cityDebounceTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${NOVA_POSHTA_PROXY}?method=cities&query=${encodeURIComponent(value)}`);
+        const json = await res.json();
+        cityDatalist.innerHTML = '';
+        cityRefMap = {};
+        (json.data || []).forEach(city => {
+          const label = `${city.Description} (${city.AreaDescription} обл.)`;
+          cityRefMap[label] = city.Ref;
+          const opt = document.createElement('option');
+          opt.value = label;
+          cityDatalist.appendChild(opt);
+        });
+        if (!json.data || json.data.length === 0) {
+          cityHint.textContent = 'Місто не знайдено — перевір написання.';
+        }
+      } catch (err) {
+        cityHint.textContent = 'Не вдалося завантажити список міст. Можна ввести назву вручну.';
+      }
+    }, 400);
+  });
+
+  cityInput.addEventListener('change', async function () {
+    if (!proxyConfigured) return;
+    const ref = cityRefMap[this.value];
+    if (!ref) {
+      cityHint.textContent = 'Обери місто зі списку підказок, щоб завантажити відділення.';
+      return;
+    }
+    cityHint.textContent = 'Завантажуємо відділення...';
+    branchSelect.innerHTML = '<option value="">Завантаження...</option>';
+    try {
+      const res = await fetch(`${NOVA_POSHTA_PROXY}?method=warehouses&cityRef=${encodeURIComponent(ref)}`);
+      const json = await res.json();
+      branchSelect.innerHTML = '<option value="">Оберіть відділення</option>';
+      (json.data || []).forEach(w => {
+        const opt = document.createElement('option');
+        opt.value = w.Description;
+        opt.textContent = w.Description;
+        branchSelect.appendChild(opt);
+      });
+      const manualOpt = document.createElement('option');
+      manualOpt.value = '__manual__';
+      manualOpt.textContent = 'Ввести номер вручну';
+      branchSelect.appendChild(manualOpt);
+      cityHint.textContent = `Знайдено відділень: ${(json.data || []).length}`;
+    } catch (err) {
+      cityHint.textContent = 'Не вдалося завантажити відділення. Введи номер вручну нижче.';
+      branchSelect.innerHTML = '<option value="">—</option>';
+    }
+  });
+
+  branchSelect.addEventListener('change', function () {
+    if (this.value === '__manual__') {
+      branchManualInput.style.display = 'block';
+      branchManualInput.name = 'branchNumber';
+      branchSelect.removeAttribute('name');
+    } else {
+      branchManualInput.style.display = 'none';
+      branchManualInput.removeAttribute('name');
+      branchSelect.name = 'branchNumber';
+    }
+  });
+
+  const deliveryTypeSelect = document.getElementById('deliveryTypeSelect');
+  const branchField = document.getElementById('branchField');
+  const addressField = document.getElementById('addressField');
+
+  deliveryTypeSelect.addEventListener('change', function(){
+    branchField.classList.remove('visible');
+    addressField.classList.remove('visible');
+    if (this.value === 'У відділення' || this.value === 'У поштомат') {
+      branchField.classList.add('visible');
+    } else if (this.value === "Кур'єром за адресою") {
+      addressField.classList.add('visible');
+    }
+  });
+
+  const form = document.getElementById('orderForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('errorBox');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errorBox.classList.remove('visible');
+
+    if (FORMSPREE_ENDPOINT.includes('ВАШ_ID_ТУТ')) {
+      errorBox.textContent = 'Увага власнику сайту: потрібно вписати свій Formspree endpoint у файлі order.html (змінна FORMSPREE_ENDPOINT), інакше заявки нікуди не приходять.';
+      errorBox.classList.add('visible');
+      return;
+    }
+
+    const fd = new FormData(form);
+    const summaryText =
+      "Ім'я: " + fd.get('firstName') + " " + fd.get('lastName') + "\n" +
+      "Телефон: " + fd.get('phone') + "\n" +
+      "Модель: " + fd.get('product') + "\n" +
+      "Розмір: " + fd.get('size') + "\n" +
+      "Місто: " + fd.get('city') + "\n" +
+      "Служба доставки: " + fd.get('carrier') + "\n" +
+      "Тип отримання: " + fd.get('deliveryType') + "\n" +
+      (fd.get('branchNumber') ? "Відділення/поштомат: " + fd.get('branchNumber') + "\n" : "") +
+      (fd.get('address') ? "Адреса: " + fd.get('address') + "\n" : "") +
+      "Оплата: " + fd.get('payment');
+
+    fd.append('order_summary', summaryText);
+    fd.append('_subject', 'Нове замовлення KICKS.UA — ' + fd.get('product'));
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'НАДСИЛАЄМО...';
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        body: fd,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        document.getElementById('orderSummary').classList.remove('visible');
+        document.getElementById('subText').style.display = 'none';
+        document.getElementById('successSummary').textContent = summaryText;
+        document.getElementById('successBox').classList.add('visible');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        throw new Error('Formspree error');
+      }
+    } catch (err) {
+      errorBox.textContent = 'Не вдалося надіслати заявку автоматично. Зателефонуй, будь ласка, напряму — або спробуй ще раз за хвилину.';
+      errorBox.classList.add('visible');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'ПІДТВЕРДИТИ ЗАМОВЛЕННЯ';
+    }
+  });
+</script>
+
+</body>
+</html>
