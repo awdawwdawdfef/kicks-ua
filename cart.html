@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кошик — KICKS.UA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  :root{
+    --canvas:#EDE9E1;--asphalt:#232320;--sole:#8A8578;--cone:#FF4B12;--chalk:#FAF8F3;--stitch:#C9C2B2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--canvas);color:var(--asphalt);font-family:'Archivo',sans-serif;}
+  a{color:inherit;}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--sole);}
+  nav{
+    display:flex;justify-content:space-between;align-items:center;padding:20px 6%;
+    position:sticky;top:0;background:var(--canvas);z-index:50;border-bottom:2px solid var(--asphalt);
+  }
+  .logo{font-family:'Archivo Black',sans-serif;font-size:21px;text-decoration:none;color:var(--asphalt);}
+  .logo span{color:var(--cone);}
+  .nav-links{display:flex;gap:20px;align-items:center;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
+  .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+
+  .cart-page{padding:50px 6% 80px;max-width:760px;}
+  .cart-page h1{
+    font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4.4vw,48px);
+    letter-spacing:-0.02em;margin-bottom:30px;line-height:1.02;
+  }
+  .cart-item{
+    display:grid;grid-template-columns:90px 1fr auto;gap:18px;align-items:center;
+    background:var(--chalk);border:2px solid var(--asphalt);padding:16px;margin-bottom:12px;
+  }
+  .cart-item .thumb{width:90px;height:90px;background:var(--canvas);border:1.5px solid var(--stitch);padding:8px;}
+  .cart-item .thumb svg{width:100%;height:100%;}
+  .cart-item .info h3{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .cart-item .info .meta{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--sole);}
+  .cart-item .price-remove{text-align:right;}
+  .cart-item .price{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--cone);font-weight:700;margin-bottom:6px;}
+  .cart-item .remove-btn{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--sole);background:none;border:none;
+    text-decoration:underline;cursor:pointer;padding:0;
+  }
+  .remove-btn:hover{color:var(--cone);}
+
+  .cart-total{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 0;border-top:2px solid var(--asphalt);margin-top:20px;
+  }
+  .cart-total .label-total{font-family:'Archivo Black',sans-serif;font-size:18px;}
+  .cart-total .sum{font-family:'Archivo Black',sans-serif;font-size:28px;color:var(--cone);}
+
+  .empty-cart{
+    background:var(--chalk);border:2px dashed var(--stitch);padding:50px 30px;text-align:center;
+  }
+  .empty-cart p{color:var(--sole);margin-bottom:20px;font-size:15px;}
+
+  .btn-primary{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:14.5px;letter-spacing:0.04em;
+    background:var(--cone);color:var(--chalk);padding:17px 32px;text-decoration:none;
+    border:2px solid var(--asphalt);box-shadow:5px 5px 0 var(--asphalt);
+    transition:transform 0.15s, box-shadow 0.15s;cursor:pointer;width:100%;text-align:center;
+  }
+  .btn-primary:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--asphalt);}
+  .btn-outline{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13.5px;
+    background:transparent;color:var(--asphalt);padding:14px 24px;text-decoration:none;
+    border:2px solid var(--asphalt);margin-top:14px;text-align:center;
+  }
+  .btn-outline:hover{background:var(--asphalt);color:var(--chalk);}
+
+  @media (max-width:600px){
+    .cart-item{grid-template-columns:70px 1fr;}
+    .price-remove{grid-column:1 / -1;display:flex;justify-content:space-between;align-items:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">KICKS<span>.UA</span></a>
+  <div class="nav-links">
+    <a href="index.html">Каталог</a>
+    <a href="delivery.html">Доставка</a>
+  </div>
+</nav>
+
+<section class="cart-page">
+  <h1>Кошик</h1>
+  <div id="cartContent"></div>
+</section>
+
+<script>
+  const PRODUCTS_DATA = {
+    "Nike Air Max 90":    { brand: "Nike",        price: 2690, body: "#FAF8F3", accent: "#FF4B12" },
+    "Adidas Samba OG":    { brand: "Adidas",      price: 2450, body: "#E9E4D2", accent: "#1F6B3B" },
+    "New Balance 550":    { brand: "New Balance", price: 3190, body: "#F2F0EA", accent: "#4A483F" },
+    "Nike Dunk Low":      { brand: "Nike",        price: 2990, body: "#FDFDFD", accent: "#2E5EFF" },
+    "Adidas Gazelle":     { brand: "Adidas",      price: 2350, body: "#EFE3DD", accent: "#B23A2E" },
+    "New Balance 9060":   { brand: "New Balance", price: 3990, body: "#EDEAE3", accent: "#8A8578" }
+  };
+
+  function shoeSvgHTML(body, accent) {
+    const stroke = "#232320";
+    return `<svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="250" cy="290" rx="200" ry="16" fill="${stroke}" opacity="0.08"/>
+      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="${body}" stroke="${stroke}" stroke-width="4"/>
+      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="${stroke}" stroke-width="4"/>
+      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="${accent}" stroke="${stroke}" stroke-width="4"/>
+      <line x1="185" y1="130" x2="150" y2="160" stroke="${stroke}" stroke-width="3"/>
+      <line x1="210" y1="120" x2="175" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <line x1="235" y1="114" x2="205" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <line x1="260" y1="115" x2="238" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <circle cx="150" cy="160" r="4" fill="${stroke}"/>
+      <circle cx="175" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="205" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="238" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="185" cy="130" r="4" fill="${stroke}"/>
+      <circle cx="210" cy="120" r="4" fill="${stroke}"/>
+      <circle cx="235" cy="114" r="4" fill="${stroke}"/>
+      <circle cx="260" cy="115" r="4" fill="${stroke}"/>
+    </svg>`;
+  }
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem('kicksCart') || '[]'); } catch(e) { return []; }
+  }
+  function saveCart(cart) { localStorage.setItem('kicksCart', JSON.stringify(cart)); }
+
+  function render() {
+    const cart = getCart();
+    const container = document.getElementById('cartContent');
+
+    if (cart.length === 0) {
+      container.innerHTML = `
+        <div class="empty-cart">
+          <p>Кошик поки порожній — додай товари з каталогу.</p>
+          <a href="index.html" class="btn-outline">← До каталогу</a>
+        </div>`;
+      return;
+    }
+
+    let total = 0;
+    let itemsHtml = '';
+    cart.forEach(item => {
+      const data = PRODUCTS_DATA[item.name] || { brand: '', price: 0, body: '#ccc', accent: '#999' };
+      total += data.price;
+      itemsHtml += `
+        <div class="cart-item">
+          <div class="thumb">${shoeSvgHTML(data.body, data.accent)}</div>
+          <div class="info">
+            <h3>${item.name}</h3>
+            <div class="meta">${data.brand} · Розмір ${item.size}</div>
+          </div>
+          <div class="price-remove">
+            <div class="price">${data.price} ₴</div>
+            <button class="remove-btn" onclick="removeItem(${item.id})">Видалити</button>
+          </div>
+        </div>`;
+    });
+
+    container.innerHTML = `
+      ${itemsHtml}
+      <div class="cart-total">
+        <span class="label-total">Разом:</span>
+        <span class="sum">${total} ₴</span>
+      </div>
+      <a href="order.html" class="btn-primary">ОФОРМИТИ ЗАМОВЛЕННЯ</a>
+      <a href="index.html" class="btn-outline" style="display:block;text-align:center;">← Продовжити покупки</a>
+    `;
+  }
+
+  function removeItem(id) {
+    const cart = getCart().filter(item => item.id !== id);
+    saveCart(cart);
+    render();
+  }
+
+  render();
+</script>
+
+</body>
+</html>

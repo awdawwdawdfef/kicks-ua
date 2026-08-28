@@ -27,10 +27,16 @@
   }
   .logo{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-0.02em;text-decoration:none;color:var(--asphalt);}
   .logo span{color:var(--cone);}
-  .nav-links{display:flex;gap:22px;align-items:center;}
-  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
+  .nav-links{display:flex;gap:20px;align-items:center;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);position:relative;}
   .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
   .nav-cta:hover{background:var(--cone);}
+  .cart-link{display:inline-flex;align-items:center;gap:6px;}
+  .cart-badge{
+    display:none;align-items:center;justify-content:center;
+    background:var(--cone);color:var(--chalk);border-radius:50%;
+    width:18px;height:18px;font-size:10.5px;font-weight:700;
+  }
 
   .promo-banner{
     background:var(--asphalt);color:var(--chalk);
@@ -148,65 +154,26 @@
     transition:transform 0.15s, box-shadow 0.15s;cursor:pointer;
   }
   .btn-primary:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--asphalt);}
+  .btn-secondary{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13.5px;letter-spacing:0.03em;
+    background:transparent;color:var(--asphalt);padding:15px 28px;text-decoration:none;
+    border:2px solid var(--asphalt);margin-left:10px;cursor:pointer;
+  }
+  .btn-secondary:hover{background:var(--asphalt);color:var(--chalk);}
+  .added-toast{
+    display:none;background:var(--asphalt);color:var(--chalk);padding:12px 18px;margin-bottom:18px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
+  .added-toast.visible{display:block;}
 
   .related{padding:16px 6% 60px;}
   .related h2{font-family:'Archivo Black',sans-serif;font-size:22px;padding:30px 0 20px;}
-
-  /* ===== ORDER PAGE ===== */
-  .order-page{padding:40px 6% 80px;max-width:640px;}
-  .order-page h1{
-    font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4.4vw,48px);
-    letter-spacing:-0.02em;margin-bottom:10px;line-height:1.02;
-  }
-  .order-page > p.sub{color:var(--sole);font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:36px;}
-  form.order-form{background:var(--chalk);border:2px solid var(--asphalt);padding:32px;}
-  form.order-form fieldset{border:none;margin-bottom:26px;padding:0;}
-  form.order-form legend{
-    font-family:'Archivo Black',sans-serif;font-size:16px;margin-bottom:14px;padding:0;
-  }
-  form.order-form .label{margin-bottom:6px;display:block;}
-  form.order-form input, form.order-form select, form.order-form textarea{
-    width:100%;padding:13px 14px;margin-bottom:16px;border:1.5px solid var(--asphalt);
-    background:var(--canvas);font-family:'Archivo',sans-serif;font-size:14.5px;
-  }
-  form.order-form textarea{resize:vertical;min-height:70px;}
-  form.order-form input:focus, form.order-form select:focus, form.order-form textarea:focus{
-    outline:2px solid var(--cone);outline-offset:1px;
-  }
-  form.order-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  form.order-form button{
-    width:100%;padding:17px;background:var(--asphalt);color:var(--chalk);border:none;
-    font-family:'JetBrains Mono',monospace;font-size:14.5px;letter-spacing:0.04em;cursor:pointer;
-  }
-  form.order-form button:hover{background:var(--cone);}
-  form.order-form .note{font-size:11.5px;color:var(--sole);margin-top:14px;text-align:center;}
-  .conditional-field{display:none;}
-  .conditional-field.visible{display:block;}
-
-  /* ===== DELIVERY PAGE ===== */
-  .methods{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:2px;background:var(--stitch);
-    border-top:2px solid var(--asphalt);border-bottom:2px solid var(--asphalt);
-    margin:0 6% 60px;
-  }
-  .method{background:var(--chalk);padding:26px 22px;}
-  .method .tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cone);margin-bottom:10px;display:block;}
-  .method h3{font-size:17px;font-weight:700;margin-bottom:8px;}
-  .method p{font-size:13.5px;color:#5a584e;line-height:1.5;}
-  .block{padding:0 6% 40px;max-width:640px;}
-  .block h3{font-family:'Archivo Black',sans-serif;font-size:20px;margin-bottom:10px;}
-  .block p{color:#4a483f;line-height:1.6;white-space:pre-line;}
-  .block.warn{background:var(--asphalt);color:var(--chalk);padding:26px 6%;max-width:none;margin-bottom:40px;}
-  .block.warn h3{color:var(--cone);}
-  .block.warn p{color:var(--chalk);}
 
   @media (max-width:760px){
     .hero{grid-template-columns:1fr;}
     .trust-strip{flex-direction:column;}
     .about-grid{grid-template-columns:1fr;}
     .about-card{border-right:none;}
-    form.order-form .row2{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -217,10 +184,21 @@
   <div class="nav-links">
     <a href="index.html">Каталог</a>
     <a href="delivery.html">Доставка</a>
-    <a href="order.html" class="nav-cta">Замовити →</a>
+    <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
+    <a href="https://t.me/твій_нік_тут" class="nav-cta">Менеджер →</a>
   </div>
 </nav>
 <div class="promo-banner">🔥 <span class="cone-text">Знижка тижня</span> — до −16% на топ-моделі · оплата при отриманні · доставка по всій Україні</div>
+<script>
+  function updateCartBadgeInline() {
+    try {
+      const cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
+      const badge = document.getElementById('cartBadge');
+      if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
+    } catch(e) {}
+  }
+  document.addEventListener('DOMContentLoaded', updateCartBadgeInline);
+</script>
 
 <div class="breadcrumb"><a href="index.html">Каталог</a> / Nike Air Max 90</div>
 
@@ -236,17 +214,20 @@
 
     <div class="size-picker">
       <span class="label">Розмір (EU)</span>
-      <div class="size-grid">
-        <button>40</button>
-        <button class="active">41</button>
-        <button>42</button>
-        <button>43</button>
-        <button>44</button>
-        <button>45</button>
+      <div class="size-grid" id="sizeGrid">
+        <button type="button" class="size-btn" data-size="40">40</button>
+        <button type="button" class="size-btn active" data-size="41">41</button>
+        <button type="button" class="size-btn" data-size="42">42</button>
+        <button type="button" class="size-btn" data-size="43">43</button>
+        <button type="button" class="size-btn" data-size="44">44</button>
+        <button type="button" class="size-btn" data-size="45">45</button>
       </div>
     </div>
 
-    <a href="order.html?product=Nike+Air+Max+90&price=2690" class="btn-primary">ОФОРМИТИ ЗАМОВЛЕННЯ</a>
+    <div class="added-toast" id="addedToast">✓ Додано в кошик — <a href="cart.html" style="color:var(--cone);text-decoration:underline;">перейти до кошика</a></div>
+
+    <button type="button" class="btn-primary" id="addToCartBtn">ДОДАТИ В КОШИК</button>
+    <a href="cart.html" class="btn-secondary" id="quickCheckout">До кошика →</a>
   </div>
 
   <div class="shoe-wrap">
@@ -367,6 +348,26 @@
     <a href="delivery.html">Доставка і оплата</a>
   </div>
 </footer>
+
+<script>
+  let selectedSize = "41";
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedSize = this.dataset.size;
+    });
+  });
+
+  document.getElementById('addToCartBtn').addEventListener('click', function() {
+    let cart = [];
+    try { cart = JSON.parse(localStorage.getItem('kicksCart') || '[]'); } catch(e) {}
+    cart.push({ name: "Nike Air Max 90", size: selectedSize, id: Date.now() + Math.random() });
+    localStorage.setItem('kicksCart', JSON.stringify(cart));
+    document.getElementById('addedToast').classList.add('visible');
+    updateCartBadgeInline();
+  });
+</script>
 
 </body>
 </html>
