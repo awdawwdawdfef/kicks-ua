@@ -28,7 +28,7 @@
   .logo{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-0.02em;text-decoration:none;color:var(--asphalt);}
   .logo span{color:var(--cone);}
   .nav-links{display:flex;gap:20px;align-items:center;}
-  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);position:relative;}
+  .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
   .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
   .nav-cta:hover{background:var(--cone);}
   .cart-link{display:inline-flex;align-items:center;gap:6px;}
@@ -56,13 +56,6 @@
   }
   .catalog-head p{font-size:16.5px;color:#4a483f;max-width:480px;line-height:1.5;}
 
-  .brand-tabs{display:flex;gap:10px;padding:0 6% 34px;flex-wrap:wrap;}
-  .brand-tabs span{
-    font-family:'JetBrains Mono',monospace;font-size:12.5px;
-    border:1.5px solid var(--asphalt);padding:8px 16px;letter-spacing:0.03em;
-  }
-  .brand-tabs span.active{background:var(--asphalt);color:var(--chalk);}
-
   .trust-strip{
     display:flex;justify-content:space-between;padding:18px 6%;
     background:var(--asphalt);color:var(--chalk);flex-wrap:wrap;gap:14px;
@@ -86,7 +79,6 @@
     border:2px solid var(--asphalt);margin-bottom:14px;
     display:flex;align-items:center;justify-content:center;overflow:hidden;padding:14px;
   }
-  .card .thumb svg{width:100%;height:100%;}
   .card .brand-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--sole);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px;}
   .card h3{font-size:15.5px;font-weight:700;margin-bottom:6px;}
   .card .price{font-family:'JetBrains Mono',monospace;font-size:15.5px;color:var(--cone);margin-top:auto;padding-top:8px;font-weight:700;}
@@ -97,6 +89,7 @@
     font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;
     padding:4px 8px;transform:rotate(4deg);
   }
+  .loading-msg{padding:40px 6%;font-family:'JetBrains Mono',monospace;color:var(--sole);}
 
   .about{padding:70px 6%;}
   .about-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--stitch);}
@@ -112,65 +105,10 @@
     padding:32px 6%;display:flex;justify-content:space-between;align-items:center;
     flex-wrap:wrap;gap:12px;border-top:2px solid var(--asphalt);
   }
-  footer .logo{font-size:16px;}
   footer .foot-links{display:flex;gap:20px;font-family:'JetBrains Mono',monospace;font-size:12px;}
   footer .foot-links a{color:var(--asphalt);text-decoration:none;border-bottom:1px solid var(--stitch);}
 
-  .breadcrumb{padding:16px 6% 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sole);}
-  .breadcrumb a{text-decoration:none;color:var(--sole);border-bottom:1px solid var(--stitch);}
-  .hero{display:grid;grid-template-columns:1fr 1.1fr;align-items:center;padding:36px 6% 46px;gap:36px;}
-  .shoe-wrap{position:relative;display:flex;justify-content:center;align-items:center;}
-  .shoe-wrap .thumb{
-    width:100%;max-width:420px;aspect-ratio:1/1;background:var(--chalk);
-    border:2px solid var(--asphalt);display:flex;align-items:center;justify-content:center;padding:30px;
-  }
-  .price-sticker{
-    position:absolute;top:4%;right:0%;background:var(--asphalt);color:var(--chalk);
-    font-family:'Archivo Black',sans-serif;width:82px;height:82px;border-radius:50%;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    transform:rotate(9deg);text-align:center;line-height:1.1;
-  }
-  .price-sticker span{font-size:9.5px;font-family:'JetBrains Mono',monospace;font-weight:500;}
-  h1.product-title{
-    font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4vw,48px);
-    line-height:0.98;letter-spacing:-0.02em;margin:12px 0 16px;
-  }
-  .price-tag{display:inline-flex;align-items:baseline;gap:10px;margin-bottom:24px;}
-  .price-tag .old{font-family:'JetBrains Mono',monospace;text-decoration:line-through;color:var(--sole);font-size:16px;}
-  .price-tag .new{font-family:'Archivo Black',sans-serif;font-size:28px;color:var(--cone);}
-  .desc{font-size:15.5px;color:#4a483f;max-width:440px;margin-bottom:24px;line-height:1.55;}
-  .size-picker{margin-bottom:26px;}
-  .size-picker .label{margin-bottom:10px;display:block;}
-  .size-grid{display:flex;flex-wrap:wrap;gap:8px;}
-  .size-grid button{
-    min-width:46px;padding:10px 6px;border:2px solid var(--asphalt);background:var(--chalk);
-    font-family:'JetBrains Mono',monospace;font-size:13px;cursor:pointer;
-  }
-  .size-grid button:hover, .size-grid button.active{background:var(--asphalt);color:var(--chalk);}
-  .btn-primary{
-    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:14.5px;letter-spacing:0.04em;
-    background:var(--cone);color:var(--chalk);padding:17px 32px;text-decoration:none;
-    border:2px solid var(--asphalt);box-shadow:5px 5px 0 var(--asphalt);
-    transition:transform 0.15s, box-shadow 0.15s;cursor:pointer;
-  }
-  .btn-primary:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--asphalt);}
-  .btn-secondary{
-    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13.5px;letter-spacing:0.03em;
-    background:transparent;color:var(--asphalt);padding:15px 28px;text-decoration:none;
-    border:2px solid var(--asphalt);margin-left:10px;cursor:pointer;
-  }
-  .btn-secondary:hover{background:var(--asphalt);color:var(--chalk);}
-  .added-toast{
-    display:none;background:var(--asphalt);color:var(--chalk);padding:12px 18px;margin-bottom:18px;
-    font-family:'JetBrains Mono',monospace;font-size:13px;
-  }
-  .added-toast.visible{display:block;}
-
-  .related{padding:16px 6% 60px;}
-  .related h2{font-family:'Archivo Black',sans-serif;font-size:22px;padding:30px 0 20px;}
-
   @media (max-width:760px){
-    .hero{grid-template-columns:1fr;}
     .trust-strip{flex-direction:column;}
     .about-grid{grid-template-columns:1fr;}
     .about-card{border-right:none;}
@@ -183,22 +121,12 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
-    <a href="delivery.html">Доставка</a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
+    <a href="delivery.html">Доставка</a>
     <a href="https://t.me/твій_нік_тут" class="nav-cta">Менеджер →</a>
   </div>
 </nav>
 <div class="promo-banner">🔥 <span class="cone-text">Знижка тижня</span> — до −16% на топ-моделі · оплата при отриманні · доставка по всій Україні</div>
-<script>
-  function updateCartBadgeInline() {
-    try {
-      const cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
-      const badge = document.getElementById('cartBadge');
-      if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
-    } catch(e) {}
-  }
-  document.addEventListener('DOMContentLoaded', updateCartBadgeInline);
-</script>
 
 <section class="catalog-head">
   <div class="hero-eyebrow">
@@ -209,13 +137,6 @@
   <p>Тільки оригінальне взуття напряму від офіційного дистриб'ютора. Оплата при отриманні, обмін розміру безкоштовно, доставка в будь-яке місто України.</p>
 </section>
 
-<div class="brand-tabs">
-  <span class="active">Всі моделі</span>
-  <span>Nike</span>
-  <span>Adidas</span>
-  <span>New Balance</span>
-</div>
-
 <div class="lace-divider"></div>
 
 <div class="trust-strip">
@@ -225,156 +146,8 @@
   <div>Гарантія оригінальності</div>
 </div>
 
-<div class="grid">
-  <a href="product-1.html" class="card">
-    <span class="badge">−16%</span>
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#FAF8F3" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#FF4B12" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">Nike</div>
-    <h3>Air Max 90</h3>
-    <div class="price"><span class="old">3 200 ₴</span>2 690 ₴</div>
-  </a>
-
-  <a href="product-2.html" class="card">
-    
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#E9E4D2" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#1F6B3B" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">Adidas</div>
-    <h3>Samba OG</h3>
-    <div class="price">2 450 ₴</div>
-  </a>
-
-  <a href="product-3.html" class="card">
-    <span class="badge">−16%</span>
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#F2F0EA" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#4A483F" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">New Balance</div>
-    <h3>550</h3>
-    <div class="price"><span class="old">3 800 ₴</span>3 190 ₴</div>
-  </a>
-
-  <a href="product-4.html" class="card">
-    <span class="badge">ХІТ</span>
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#FDFDFD" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#2E5EFF" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">Nike</div>
-    <h3>Dunk Low</h3>
-    <div class="price">2 990 ₴</div>
-  </a>
-
-  <a href="product-5.html" class="card">
-    <span class="badge">−13%</span>
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#EFE3DD" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#B23A2E" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">Adidas</div>
-    <h3>Gazelle</h3>
-    <div class="price"><span class="old">2 700 ₴</span>2 350 ₴</div>
-  </a>
-
-  <a href="product-6.html" class="card">
-    <span class="badge">ХІТ</span>
-    <div class="thumb"><svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="250" cy="290" rx="200" ry="16" fill="#232320" opacity="0.08"/>
-      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="#EDEAE3" stroke="#232320" stroke-width="4"/>
-      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="#8A8578" stroke="#232320" stroke-width="4"/>
-      <line x1="185" y1="130" x2="150" y2="160" stroke="#232320" stroke-width="3"/>
-      <line x1="210" y1="120" x2="175" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="235" y1="114" x2="205" y2="158" stroke="#232320" stroke-width="3"/>
-      <line x1="260" y1="115" x2="238" y2="158" stroke="#232320" stroke-width="3"/>
-      <circle cx="150" cy="160" r="4" fill="#232320"/>
-      <circle cx="175" cy="158" r="4" fill="#232320"/>
-      <circle cx="205" cy="158" r="4" fill="#232320"/>
-      <circle cx="238" cy="158" r="4" fill="#232320"/>
-      <circle cx="185" cy="130" r="4" fill="#232320"/>
-      <circle cx="210" cy="120" r="4" fill="#232320"/>
-      <circle cx="235" cy="114" r="4" fill="#232320"/>
-      <circle cx="260" cy="115" r="4" fill="#232320"/>
-    </svg></div>
-    <div class="brand-tag">New Balance</div>
-    <h3>9060</h3>
-    <div class="price"><span class="old">4 500 ₴</span>3 990 ₴</div>
-  </a>
+<div class="grid" id="productsGrid">
+  <div class="loading-msg">Завантажуємо каталог...</div>
 </div>
 
 <section class="about">
@@ -407,6 +180,77 @@
     <a href="delivery.html">Доставка і оплата</a>
   </div>
 </footer>
+
+<script>
+  function shoeSvgHTML(body, accent) {
+    const stroke = "#232320";
+    return `<svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <ellipse cx="250" cy="290" rx="200" ry="16" fill="${stroke}" opacity="0.08"/>
+      <path d="M40 230 Q30 180 90 165 Q110 120 170 110 Q230 95 280 115 L440 150 Q470 158 468 190 Q465 225 420 232 L70 245 Q45 245 40 230 Z" fill="${body}" stroke="${stroke}" stroke-width="4"/>
+      <path d="M40 230 Q60 250 100 248 L440 232 Q470 225 468 190" fill="#8A8578" stroke="${stroke}" stroke-width="4"/>
+      <path d="M170 110 Q230 95 280 115 L320 150 L150 155 Z" fill="${accent}" stroke="${stroke}" stroke-width="4"/>
+      <line x1="185" y1="130" x2="150" y2="160" stroke="${stroke}" stroke-width="3"/>
+      <line x1="210" y1="120" x2="175" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <line x1="235" y1="114" x2="205" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <line x1="260" y1="115" x2="238" y2="158" stroke="${stroke}" stroke-width="3"/>
+      <circle cx="150" cy="160" r="4" fill="${stroke}"/>
+      <circle cx="175" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="205" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="238" cy="158" r="4" fill="${stroke}"/>
+      <circle cx="185" cy="130" r="4" fill="${stroke}"/>
+      <circle cx="210" cy="120" r="4" fill="${stroke}"/>
+      <circle cx="235" cy="114" r="4" fill="${stroke}"/>
+      <circle cx="260" cy="115" r="4" fill="${stroke}"/>
+    </svg>`;
+  }
+
+  function productThumbHTML(product) {
+    if (product.images && product.images.length > 0) {
+      return `<img src="${product.images[0]}" style="width:100%;height:100%;object-fit:cover;" alt="${product.name}">`;
+    }
+    const c = product.placeholderColor || { body: "#EDE9E1", accent: "#8A8578" };
+    return shoeSvgHTML(c.body, c.accent);
+  }
+
+  (function(){
+    try {
+      var cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
+      var badge = document.getElementById('cartBadge');
+      if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
+    } catch(e) {}
+  })();
+
+  async function renderCatalog() {
+    const grid = document.getElementById('productsGrid');
+    try {
+      const res = await fetch('products.json?_=' + Date.now());
+      const products = await res.json();
+      const active = products.filter(p => p.active !== false);
+
+      if (active.length === 0) {
+        grid.innerHTML = '<div class="loading-msg">Товарів поки немає.</div>';
+        return;
+      }
+
+      grid.innerHTML = active.map(p => {
+        const oldHtml = p.oldPrice ? `<span class="old">${p.oldPrice} ₴</span>` : '';
+        const badgeHtml = p.badge ? `<span class="badge">${p.badge}</span>` : '';
+        return `
+          <a href="product.html?id=${encodeURIComponent(p.id)}" class="card">
+            ${badgeHtml}
+            <div class="thumb">${productThumbHTML(p)}</div>
+            <div class="brand-tag">${p.brand}</div>
+            <h3>${p.name}</h3>
+            <div class="price">${oldHtml}${p.price} ₴</div>
+          </a>`;
+      }).join('');
+    } catch (err) {
+      grid.innerHTML = '<div class="loading-msg">Не вдалося завантажити каталог. Спробуй оновити сторінку.</div>';
+    }
+  }
+
+  renderCatalog();
+</script>
 
 </body>
 </html>

@@ -22,6 +22,12 @@
   .nav-links{display:flex;gap:20px;align-items:center;}
   .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
   .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+  .cart-link{display:inline-flex;align-items:center;gap:6px;}
+  .cart-badge{
+    display:none;align-items:center;justify-content:center;
+    background:var(--cone);color:var(--chalk);border-radius:50%;
+    width:18px;height:18px;font-size:10.5px;font-weight:700;
+  }
 
   .order-page{padding:40px 6% 80px;max-width:680px;}
   .order-page h1{
@@ -46,7 +52,7 @@
     background:var(--chalk);border:1.5px solid var(--stitch);padding:12px;margin-bottom:8px;
   }
   .cart-item-row .thumb{width:60px;height:60px;background:var(--canvas);border:1px solid var(--stitch);padding:6px;}
-  .cart-item-row .thumb svg{width:100%;height:100%;}
+  .cart-item-row .thumb img, .cart-item-row .thumb svg{width:100%;height:100%;object-fit:cover;}
   .cart-item-row .info h4{font-size:14px;font-weight:700;}
   .cart-item-row .info .meta{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--sole);}
   .cart-item-row .price{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--cone);font-weight:700;}
@@ -121,7 +127,8 @@
 <nav>
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
-    <a href="cart.html">Кошик</a>
+    <a href="index.html">Каталог</a>
+    <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
   </div>
 </nav>
@@ -136,7 +143,7 @@
     <a href="https://t.me/твій_нік_тут" target="_blank">Зв'язатися з менеджером</a>
   </div>
 
-  <div id="cartSummarySection"></div>
+  <div id="cartSummarySection"><div class="label">Завантаження...</div></div>
 
   <div class="error-box" id="errorBox"></div>
 
@@ -248,15 +255,6 @@
   // ==== ВАЖЛИВО: встав сюди адресу свого Cloudflare Worker для автопідбору відділень ====
   const NOVA_POSHTA_PROXY = "https://твій-worker.workers.dev";
 
-  const PRODUCTS_DATA = {
-    "Nike Air Max 90":    { brand: "Nike",        price: 2690, body: "#FAF8F3", accent: "#FF4B12" },
-    "Adidas Samba OG":    { brand: "Adidas",      price: 2450, body: "#E9E4D2", accent: "#1F6B3B" },
-    "New Balance 550":    { brand: "New Balance", price: 3190, body: "#F2F0EA", accent: "#4A483F" },
-    "Nike Dunk Low":      { brand: "Nike",        price: 2990, body: "#FDFDFD", accent: "#2E5EFF" },
-    "Adidas Gazelle":     { brand: "Adidas",      price: 2350, body: "#EFE3DD", accent: "#B23A2E" },
-    "New Balance 9060":   { brand: "New Balance", price: 3990, body: "#EDEAE3", accent: "#8A8578" }
-  };
-
   function shoeSvgHTML(body, accent) {
     const stroke = "#232320";
     return `<svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
@@ -278,39 +276,72 @@
       <circle cx="260" cy="115" r="4" fill="${stroke}"/>
     </svg>`;
   }
+  function productThumbHTML(product) {
+    if (product.images && product.images.length > 0) {
+      return `<img src="${product.images[0]}" alt="${product.name}">`;
+    }
+    const c = product.placeholderColor || { body: "#EDE9E1", accent: "#8A8578" };
+    return shoeSvgHTML(c.body, c.accent);
+  }
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem('kicksCart') || '[]'); } catch(e) { return []; }
   }
 
-  const cart = getCart();
-  const summarySection = document.getElementById('cartSummarySection');
   const submitBtn = document.getElementById('submitBtn');
+  const summarySection = document.getElementById('cartSummarySection');
   let cartText = '';
   let cartTotalValue = 0;
+  let cartIsEmpty = true;
 
-  if (cart.length === 0) {
-    summarySection.innerHTML = `<div class="empty-cart-notice">Кошик порожній. <a href="index.html">Повернутись до каталогу</a>, щоб додати товари.</div>`;
-    submitBtn.disabled = true;
-  } else {
+  async function initCartSummary() {
+    const cart = getCart();
+    let products = [];
+    try {
+      const res = await fetch('products.json?_=' + Date.now());
+      products = await res.json();
+    } catch(e) {
+      summarySection.innerHTML = '<div class="error-box visible">Не вдалося завантажити дані товарів.</div>';
+      submitBtn.disabled = true;
+      return;
+    }
+
+    const badge = document.getElementById('cartBadge');
+    if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
+
+    const validItems = cart.map(item => {
+      const product = products.find(p => p.id === item.productId);
+      return product ? { item, product } : null;
+    }).filter(Boolean);
+
+    if (validItems.length === 0) {
+      summarySection.innerHTML = `<div class="empty-cart-notice">Кошик порожній. <a href="index.html">Повернутись до каталогу</a>, щоб додати товари.</div>`;
+      submitBtn.disabled = true;
+      cartIsEmpty = true;
+      return;
+    }
+
+    cartIsEmpty = false;
     let rows = '';
-    cart.forEach(item => {
-      const data = PRODUCTS_DATA[item.name] || { brand: '', price: 0, body: '#ccc', accent: '#999' };
-      cartTotalValue += data.price;
-      cartText += `${item.name} (розмір ${item.size}) — ${data.price} ₴\\n`;
+    validItems.forEach(({item, product}) => {
+      cartTotalValue += product.price;
+      cartText += `${product.brand} ${product.name} (розмір ${item.size}) — ${product.price} ₴\\n`;
       rows += `
         <div class="cart-item-row">
-          <div class="thumb">${shoeSvgHTML(data.body, data.accent)}</div>
-          <div class="info"><h4>${item.name}</h4><div class="meta">${data.brand} · Розмір ${item.size}</div></div>
-          <div class="price">${data.price} ₴</div>
+          <div class="thumb">${productThumbHTML(product)}</div>
+          <div class="info"><h4>${product.brand} ${product.name}</h4><div class="meta">Розмір ${item.size}</div></div>
+          <div class="price">${product.price} ₴</div>
         </div>`;
     });
+
     summarySection.innerHTML = `
       <div class="cart-items-summary">
         ${rows}
         <div class="cart-total-row"><span>Разом:</span><span class="sum">${cartTotalValue} ₴</span></div>
       </div>`;
   }
+
+  initCartSummary();
 
   // contact method conditional field
   const contactMethodSelect = document.getElementById('contactMethodSelect');
@@ -319,7 +350,7 @@
     telegramField.classList.toggle('visible', this.value === 'Telegram');
   });
 
-  // delivery type reveals city block
+  // delivery logic
   const carrierSelect = document.getElementById('carrierSelect');
   const deliveryTypeSelect = document.getElementById('deliveryTypeSelect');
   const cityWrapper = document.getElementById('cityWrapper');
@@ -336,10 +367,7 @@
   let cityDebounceTimer = null;
 
   deliveryTypeSelect.addEventListener('change', function(){
-    if (!this.value) {
-      cityWrapper.classList.remove('visible');
-      return;
-    }
+    if (!this.value) { cityWrapper.classList.remove('visible'); return; }
     cityWrapper.classList.add('visible');
     branchField.classList.remove('visible');
     addressField.classList.remove('visible');
@@ -419,7 +447,7 @@
     e.preventDefault();
     errorBox.classList.remove('visible');
 
-    if (cart.length === 0) return;
+    if (cartIsEmpty) return;
 
     if (FORMSPREE_ENDPOINT.includes('ВАШ_ID_ТУТ')) {
       errorBox.textContent = 'Увага власнику сайту: потрібно вписати Formspree endpoint у файлі order.html.';

@@ -22,6 +22,12 @@
   .nav-links{display:flex;gap:20px;align-items:center;}
   .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
   .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+  .cart-link{display:inline-flex;align-items:center;gap:6px;}
+  .cart-badge{
+    display:none;align-items:center;justify-content:center;
+    background:var(--cone);color:var(--chalk);border-radius:50%;
+    width:18px;height:18px;font-size:10.5px;font-weight:700;
+  }
 
   .cart-page{padding:50px 6% 80px;max-width:760px;}
   .cart-page h1{
@@ -33,7 +39,7 @@
     background:var(--chalk);border:2px solid var(--asphalt);padding:16px;margin-bottom:12px;
   }
   .cart-item .thumb{width:90px;height:90px;background:var(--canvas);border:1.5px solid var(--stitch);padding:8px;}
-  .cart-item .thumb svg{width:100%;height:100%;}
+  .cart-item .thumb img, .cart-item .thumb svg{width:100%;height:100%;object-fit:cover;}
   .cart-item .info h3{font-size:16px;font-weight:700;margin-bottom:4px;}
   .cart-item .info .meta{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--sole);}
   .cart-item .price-remove{text-align:right;}
@@ -82,25 +88,18 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
+    <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
+    <a href="https://t.me/твій_нік_тут" class="nav-cta">Менеджер →</a>
   </div>
 </nav>
 
 <section class="cart-page">
   <h1>Кошик</h1>
-  <div id="cartContent"></div>
+  <div id="cartContent"><div class="label">Завантаження...</div></div>
 </section>
 
 <script>
-  const PRODUCTS_DATA = {
-    "Nike Air Max 90":    { brand: "Nike",        price: 2690, body: "#FAF8F3", accent: "#FF4B12" },
-    "Adidas Samba OG":    { brand: "Adidas",      price: 2450, body: "#E9E4D2", accent: "#1F6B3B" },
-    "New Balance 550":    { brand: "New Balance", price: 3190, body: "#F2F0EA", accent: "#4A483F" },
-    "Nike Dunk Low":      { brand: "Nike",        price: 2990, body: "#FDFDFD", accent: "#2E5EFF" },
-    "Adidas Gazelle":     { brand: "Adidas",      price: 2350, body: "#EFE3DD", accent: "#B23A2E" },
-    "New Balance 9060":   { brand: "New Balance", price: 3990, body: "#EDEAE3", accent: "#8A8578" }
-  };
-
   function shoeSvgHTML(body, accent) {
     const stroke = "#232320";
     return `<svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
@@ -122,15 +121,35 @@
       <circle cx="260" cy="115" r="4" fill="${stroke}"/>
     </svg>`;
   }
+  function productThumbHTML(product) {
+    if (product.images && product.images.length > 0) {
+      return `<img src="${product.images[0]}" alt="${product.name}">`;
+    }
+    const c = product.placeholderColor || { body: "#EDE9E1", accent: "#8A8578" };
+    return shoeSvgHTML(c.body, c.accent);
+  }
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem('kicksCart') || '[]'); } catch(e) { return []; }
   }
   function saveCart(cart) { localStorage.setItem('kicksCart', JSON.stringify(cart)); }
 
-  function render() {
+  let allProducts = [];
+
+  async function render() {
     const cart = getCart();
     const container = document.getElementById('cartContent');
+
+    try {
+      const res = await fetch('products.json?_=' + Date.now());
+      allProducts = await res.json();
+    } catch (e) {
+      container.innerHTML = '<div class="label">Не вдалося завантажити дані товарів.</div>';
+      return;
+    }
+
+    const badge = document.getElementById('cartBadge');
+    if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
 
     if (cart.length === 0) {
       container.innerHTML = `
@@ -143,22 +162,37 @@
 
     let total = 0;
     let itemsHtml = '';
+    let validCart = [];
+
     cart.forEach(item => {
-      const data = PRODUCTS_DATA[item.name] || { brand: '', price: 0, body: '#ccc', accent: '#999' };
-      total += data.price;
+      const product = allProducts.find(p => p.id === item.productId);
+      if (!product) return; // товар видалено адміном — просто пропускаємо
+      validCart.push(item);
+      total += product.price;
       itemsHtml += `
         <div class="cart-item">
-          <div class="thumb">${shoeSvgHTML(data.body, data.accent)}</div>
+          <div class="thumb">${productThumbHTML(product)}</div>
           <div class="info">
-            <h3>${item.name}</h3>
-            <div class="meta">${data.brand} · Розмір ${item.size}</div>
+            <h3>${product.brand} ${product.name}</h3>
+            <div class="meta">Розмір ${item.size}</div>
           </div>
           <div class="price-remove">
-            <div class="price">${data.price} ₴</div>
-            <button class="remove-btn" onclick="removeItem(${item.id})">Видалити</button>
+            <div class="price">${product.price} ₴</div>
+            <button class="remove-btn" onclick="removeItem(${item.cartItemId})">Видалити</button>
           </div>
         </div>`;
     });
+
+    if (validCart.length !== cart.length) saveCart(validCart);
+
+    if (validCart.length === 0) {
+      container.innerHTML = `
+        <div class="empty-cart">
+          <p>Товари з кошика більше не доступні.</p>
+          <a href="index.html" class="btn-outline">← До каталогу</a>
+        </div>`;
+      return;
+    }
 
     container.innerHTML = `
       ${itemsHtml}
@@ -171,8 +205,8 @@
     `;
   }
 
-  function removeItem(id) {
-    const cart = getCart().filter(item => item.id !== id);
+  function removeItem(cartItemId) {
+    const cart = getCart().filter(item => item.cartItemId !== cartItemId);
     saveCart(cart);
     render();
   }
