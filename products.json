@@ -24,16 +24,48 @@
       "45"
     ],
     "images": [
+      "images/nike-acg/1.jpg",
+      "images/nike-acg/2.jpg",
       "images/nike-acg/3.jpg",
       "images/nike-acg/4.jpg",
       "images/nike-acg/5.jpg",
       "images/nike-acg/6.jpg",
       "images/nike-acg/7.jpg",
       "images/nike-acg/8.jpg",
-      "images/nike-acg/9.jpg",
-      "images/nike-acg-terra-antarktik/1788032153450-IMG_6683.png"
+      "images/nike-acg/9.jpg"
     ],
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-01T12:00:00Z",
+    "stock": null,
+    "category": ""
+  },
+  {
+    "id": "nike-air-max-90",
+    "brand": "Nike",
+    "name": "Air Max 90",
+    "price": 2690,
+    "oldPrice": 3200,
+    "badge": "−16%",
+    "description": "Класика 1990 року — видима амортизуюча подушка Air, шкіряний верх із текстильними вставками. Підходить на щодень і для міста.",
+    "specs": {},
+    "sizeChart": "",
+    "sizes": [
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45"
+    ],
+    "images": [],
+    "placeholderColor": {
+      "body": "#FAF8F3",
+      "accent": "#FF4B12"
+    },
+    "active": true,
+    "createdAt": "2026-08-04T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "adidas-samba-og",
@@ -58,7 +90,10 @@
       "body": "#E9E4D2",
       "accent": "#1F6B3B"
     },
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-07T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "new-balance-550",
@@ -83,7 +118,10 @@
       "body": "#F2F0EA",
       "accent": "#4A483F"
     },
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-10T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "nike-dunk-low",
@@ -108,7 +146,10 @@
       "body": "#FDFDFD",
       "accent": "#2E5EFF"
     },
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-13T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "adidas-gazelle",
@@ -133,7 +174,10 @@
       "body": "#EFE3DD",
       "accent": "#B23A2E"
     },
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-16T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "new-balance-9060",
@@ -158,6 +202,9 @@
       "body": "#EDEAE3",
       "accent": "#8A8578"
     },
-    "active": true
+    "active": true,
+    "createdAt": "2026-08-19T12:00:00Z",
+    "stock": null,
+    "category": ""
   }
 ]

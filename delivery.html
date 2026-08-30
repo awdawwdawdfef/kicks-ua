@@ -17,9 +17,14 @@
   }
   .logo{font-family:'Archivo Black',sans-serif;font-size:21px;text-decoration:none;color:var(--asphalt);}
   .logo span{color:var(--cone);}
-  .nav-links{display:flex;gap:20px;align-items:center;}
+  .nav-links{display:flex;gap:16px;align-items:center;}
   .nav-links a{font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;color:var(--asphalt);}
-  .nav-cta{background:var(--asphalt);color:var(--chalk);padding:10px 18px;}
+  .nav-cta{
+    background:var(--cone);color:var(--chalk);padding:11px 20px;font-weight:700;
+    display:inline-flex;align-items:center;gap:6px;border:2px solid var(--asphalt);
+    box-shadow:3px 3px 0 var(--asphalt);transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-cta:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--asphalt);background:var(--asphalt);}
   .cart-link{display:inline-flex;align-items:center;gap:6px;}
   .cart-badge{
     display:none;align-items:center;justify-content:center;
@@ -47,9 +52,9 @@
   .block.warn h3{color:var(--cone);margin-left:0;}
   .block.warn p{color:var(--chalk);}
   .block.warn .inner{max-width:680px;}
+  .loading-msg{padding:0 6% 40px;font-family:'JetBrains Mono',monospace;color:var(--sole);}
 
   footer{padding:32px 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:2px solid var(--asphalt);}
-  footer .logo{font-size:16px;}
   footer .foot-links{display:flex;gap:20px;font-family:'JetBrains Mono',monospace;font-size:12px;}
   footer .foot-links a{color:var(--asphalt);text-decoration:none;border-bottom:1px solid var(--stitch);}
 </style>
@@ -61,68 +66,17 @@
   <div class="nav-links">
     <a href="index.html">Каталог</a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
-    <a href="https://t.me/твій_нік_тут" class="nav-cta">Менеджер →</a>
+    <a href="https://t.me/твій_нік_тут" class="nav-cta">💬 Написати нам</a>
   </div>
 </nav>
-<script>
-  (function(){
-    try {
-      var cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
-      var badge = document.getElementById('cartBadge');
-      if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
-    } catch(e) {}
-  })();
-</script>
 
 <section class="head">
   <span class="label">Умови</span>
   <h1>Доставка<br>і оплата</h1>
 </section>
 
-<div class="methods">
-  <div class="method">
-    <span class="tag">01</span>
-    <h3>Нова пошта — відділення</h3>
-    <p>1-3 робочих дні по всій Україні. Вартість за тарифами перевізника, оплата при отриманні.</p>
-  </div>
-  <div class="method">
-    <span class="tag">02</span>
-    <h3>Нова пошта — поштомат</h3>
-    <p>Забираєш замовлення у зручний час, без черг. Доступно у більшості великих міст.</p>
-  </div>
-  <div class="method">
-    <span class="tag">03</span>
-    <h3>Укрпошта</h3>
-    <p>Актуально для невеликих населених пунктів, де немає відділень Нової пошти. Термін 3-5 днів.</p>
-  </div>
-  <div class="method">
-    <span class="tag">04</span>
-    <h3>Кур'єром по місту</h3>
-    <p>Доступно в Дніпрі та області — доставка протягом дня, оплата готівкою або карткою кур'єру.</p>
-  </div>
-</div>
-
-<div class="block warn">
-  <div class="inner">
-    <h3>Відправлення</h3>
-    <p>Понеділок - Субота: замовлення оформлені до 17:00 - їдуть того ж дня. Перевірка на брак здійснюється лише на пошті при співробітнику пошти, фото браку з дому не приймається та не розцінюється як брак!
-
-У разі отримання клієнтом браку - повернення здійснюється ЗА НАШ РАХУНОК, виключно після фото/відео доказів.</p>
-  </div>
-</div>
-
-<div class="block">
-  <h3>Обмін / повернення після того як клієнт отримав з пошти</h3>
-  <p>Обмін або повернення можливе протягом 14 днів з моменту отримання посилки з відділення пошти.
-
-Від вас потрібно написати менеджеру по прийому замовлень, що клієнт хоче зробити обмін/повернення і менеджер надасть вам усі потрібні дані.
-
-ПОСИЛКА ПОВИННА БУТИ БЕЗ ПОДАТКОВОГО ПЛАТЕЖУ І ОПЛАЧЕНА КЛІЄНТОМ. Якщо це буде зроблено, то кур'єр не прийме посилку.</p>
-</div>
-
-<div class="block">
-  <h3>Гарантія оригінальності</h3>
-  <p>Все взуття постачається напряму від офіційного дистриб'ютора. За запитом надаємо документи, що підтверджують походження товару.</p>
+<div id="contentArea">
+  <div class="loading-msg">Завантаження...</div>
 </div>
 
 <footer>
@@ -131,6 +85,55 @@
     <a href="index.html">Каталог</a>
   </div>
 </footer>
+
+<script>
+  (function(){
+    try {
+      var cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
+      var badge = document.getElementById('cartBadge');
+      if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
+    } catch(e) {}
+  })();
+
+  async function renderContent() {
+    const area = document.getElementById('contentArea');
+    try {
+      const res = await fetch('site-content.json?_=' + Date.now());
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      const methodsHtml = (data.deliveryMethods || []).map((m, i) => `
+        <div class="method">
+          <span class="tag">0${i + 1}</span>
+          <h3>${m.title}</h3>
+          <p>${m.text}</p>
+        </div>`).join('');
+
+      area.innerHTML = `
+        <div class="methods">${methodsHtml}</div>
+        <div class="block warn">
+          <div class="inner">
+            <h3>${data.shippingNotice.title}</h3>
+            <p>${data.shippingNotice.text}</p>
+          </div>
+        </div>
+        <div class="block">
+          <h3>${data.returnPolicy.title}</h3>
+          <p>${data.returnPolicy.text}</p>
+        </div>
+        <div class="block">
+          <h3>${data.qualityGuarantee.title}</h3>
+          <p>${data.qualityGuarantee.text}</p>
+        </div>
+      `;
+    } catch (err) {
+      console.error('Помилка завантаження контенту:', err);
+      area.innerHTML = '<div class="loading-msg">Не вдалося завантажити інформацію (' + err.message + '). Перевір, що файл site-content.json є в репозиторії.</div>';
+    }
+  }
+
+  renderContent();
+</script>
 
 </body>
 </html>
