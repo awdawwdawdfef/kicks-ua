@@ -41,31 +41,40 @@
   },
   {
     "id": "nike-air-max-90",
-    "brand": "Nike",
-    "name": "Air Max 90",
-    "price": 2690,
+    "brand": "Lacoste",
+    "category": "",
+    "name": "Elite Active Black White",
+    "price": 2400,
     "oldPrice": 3200,
-    "badge": "−16%",
-    "description": "Класика 1990 року — видима амортизуюча подушка Air, шкіряний верх із текстильними вставками. Підходить на щодень і для міста.",
+    "badge": null,
+    "description": "▪️Виробництво : В'єтнам\n▪️Матеріал верху  : шкіра , натуральна замша \n▪️Колір : чорний\n▪️Підошва : піна , гумовий протектор\n▪️Розміри:  41-45\n▪️Сезон :  весна / літо / осінь  \n📦Коробка Lacoste , пергамент",
     "specs": {},
-    "sizeChart": "",
+    "sizeChart": "▫️41 = 25.5 см ; ▫️42 = 26 см ; ▫️43 = 27 см ; ▫️44 = 27,5 см ; ▫️45 = 28 см .",
     "sizes": [
-      "40",
       "41",
       "42",
       "43",
       "44",
       "45"
     ],
-    "images": [],
+    "stock": null,
+    "images": [
+      "images/nike-air-max-90/1788207325535-____________PNG_4.png",
+      "images/nike-air-max-90/1788207327604-____________PNG_7.png",
+      "images/nike-air-max-90/1788207329666-____________PNG_3.png",
+      "images/nike-air-max-90/1788207331504-____________PNG.png",
+      "images/nike-air-max-90/1788207333452-____________PNG_5.png",
+      "images/nike-air-max-90/1788207335292-____________PNG_2.png",
+      "images/nike-air-max-90/1788207337245-____________PNG_8.png",
+      "images/nike-air-max-90/1788207339693-____________PNG_9.png",
+      "images/nike-air-max-90/1788207341636-____________PNG_6.png"
+    ],
+    "active": true,
     "placeholderColor": {
       "body": "#FAF8F3",
       "accent": "#FF4B12"
     },
-    "active": true,
-    "createdAt": "2026-08-04T12:00:00Z",
-    "stock": null,
-    "category": ""
+    "createdAt": "2026-08-04T12:00:00Z"
   },
   {
     "id": "adidas-samba-og",
