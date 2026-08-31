@@ -215,5 +215,39 @@
     "createdAt": "2026-08-19T12:00:00Z",
     "stock": null,
     "category": ""
+  },
+  {
+    "id": "adidas-ivy-park-savage-v4-black-white-mthokoi8",
+    "brand": "Adidas",
+    "category": "",
+    "name": "Ivy Park Savage V4 Black White",
+    "price": 2000,
+    "oldPrice": null,
+    "badge": null,
+    "description": "▪️Виробництво : В'єтнам \n▪️Матеріал верху : шкіра  , Waterproof, рефлективні вставки\n▪️Колір : чорний\n▪️Підошва : піна , гумовий протектор \n▪️Розміри : 41-46\n▪️Сезон : весна / літо /осінь\n📦Коробка Adidas , фірмовий папір",
+    "specs": {},
+    "sizeChart": "▫️41 = 26 см ; ▫️42 = 26,5 см ; ▫️43 = 27 см ; ▫️44 = 28 см ; ▫️45 = 28,5 см ; ▫️46 = 29,5 см .",
+    "sizes": [
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46"
+    ],
+    "stock": null,
+    "images": [
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207498514-____________PNG.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207501542-____________PNG_2.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207503537-____________PNG_5.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207505248-____________PNG_3.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207506976-____________PNG_4.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207508966-____________PNG_8.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207511128-____________PNG_7.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207513473-____________PNG_9.png",
+      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207515420-____________PNG_6.png"
+    ],
+    "active": true,
+    "createdAt": "2026-08-31T20:18:37.463Z"
   }
 ]
