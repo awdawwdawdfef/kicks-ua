@@ -50,6 +50,22 @@
   }
   .promo-banner .cone-text{color:var(--cone);font-weight:700;}
 
+  .banner-carousel{position:relative;margin:0 6% 24px;overflow:hidden;border:2px solid var(--asphalt);}
+  .banner-track{display:flex;transition:transform 0.5s ease;}
+  .banner-slide{min-width:100%;aspect-ratio:16/5;position:relative;text-decoration:none;display:block;}
+  .banner-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+  .banner-slide .banner-title{
+    position:absolute;bottom:0;left:0;right:0;padding:16px 20px;
+    background:linear-gradient(transparent, rgba(35,35,32,0.85));
+    color:var(--chalk);font-family:'Archivo Black',sans-serif;font-size:clamp(16px,2.4vw,24px);
+  }
+  .banner-dots{position:absolute;bottom:10px;right:16px;display:flex;gap:6px;}
+  .banner-dots button{
+    width:8px;height:8px;border-radius:50%;border:1.5px solid var(--chalk);background:transparent;
+    cursor:pointer;padding:0;
+  }
+  .banner-dots button.active{background:var(--chalk);}
+  @media (max-width:600px){.banner-slide{aspect-ratio:16/9;}}
   .catalog-head{padding:56px 6% 30px;}
   .catalog-head .hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
   .catalog-head .dot{width:8px;height:8px;border-radius:50%;background:var(--cone);animation:pulse 1.6s infinite;}
@@ -72,6 +88,41 @@
     padding:12px 14px;border:1.5px solid var(--asphalt);background:var(--chalk);
     font-family:'JetBrains Mono',monospace;font-size:12.5px;cursor:pointer;
   }
+  .filter-toggle-btn{
+    padding:12px 16px;border:1.5px solid var(--asphalt);background:var(--chalk);
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .filter-toggle-btn:hover{background:var(--stitch);}
+  .filter-count-badge{
+    background:var(--cone);color:var(--chalk);border-radius:50%;
+    width:18px;height:18px;font-size:10.5px;font-weight:700;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .filters-panel{
+    display:none;padding:20px 6% 24px;background:var(--chalk);border-top:1.5px solid var(--stitch);border-bottom:1.5px solid var(--stitch);
+    margin-bottom:10px;flex-wrap:wrap;gap:26px;
+  }
+  .filters-panel.visible{display:flex;}
+  .filter-group{display:flex;flex-direction:column;gap:8px;min-width:180px;}
+  .filter-group-checkbox{justify-content:flex-end;}
+  .filter-group-checkbox label{display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer;}
+  .price-inputs{display:flex;align-items:center;gap:8px;}
+  .price-inputs input{
+    width:90px;padding:9px 10px;border:1.5px solid var(--asphalt);background:var(--canvas);
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
+  .size-filter-grid{display:flex;flex-wrap:wrap;gap:6px;max-width:280px;}
+  .size-filter-grid button{
+    min-width:38px;padding:7px 4px;border:1.5px solid var(--asphalt);background:var(--canvas);
+    font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;
+  }
+  .size-filter-grid button.active{background:var(--asphalt);color:var(--chalk);}
+  .reset-filters-btn{
+    align-self:flex-end;font-family:'JetBrains Mono',monospace;font-size:12px;
+    background:none;border:none;color:var(--sole);text-decoration:underline;cursor:pointer;padding:9px 0;
+  }
+  .reset-filters-btn:hover{color:var(--cone);}
   .brand-tabs{display:flex;gap:10px;padding:0 6% 34px;flex-wrap:wrap;}
   .brand-tabs button{
     font-family:'JetBrains Mono',monospace;font-size:12.5px;
@@ -114,6 +165,14 @@
     font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;
     padding:4px 8px;transform:rotate(4deg);
   }
+  .fav-btn{
+    position:absolute;bottom:16px;right:16px;width:34px;height:34px;
+    background:var(--chalk);border:1.5px solid var(--asphalt);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    color:var(--stitch);font-size:16px;z-index:2;transition:all 0.15s;
+  }
+  .fav-btn:hover{border-color:var(--cone);}
+  .fav-btn.active{background:var(--cone);color:var(--chalk);border-color:var(--asphalt);}
   .loading-msg{padding:40px 6%;font-family:'JetBrains Mono',monospace;color:var(--sole);}
 
   .about{padding:70px 6%;}
@@ -146,12 +205,18 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
+    <a href="favorites.html" class="cart-link">♥ Обране <span class="cart-badge" id="favBadge">0</span></a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
     <a href="https://t.me/твій_нік_тут" class="nav-cta">💬 Написати нам</a>
   </div>
 </nav>
 <div class="promo-banner">🔥 <span class="cone-text">Знижка тижня</span> — до −16% на топ-моделі · оплата при отриманні · доставка по всій Україні</div>
+
+<div class="banner-carousel" id="bannerCarousel" style="display:none;">
+  <div class="banner-track" id="bannerTrack"></div>
+  <div class="banner-dots" id="bannerDots"></div>
+</div>
 
 <section class="catalog-head">
   <div class="hero-eyebrow">
@@ -170,6 +235,28 @@
     <option value="price-desc">Ціна: спочатку дорожчі</option>
     <option value="newest">Спочатку новинки</option>
   </select>
+  <button type="button" class="filter-toggle-btn" id="filterToggleBtn">⚙ Фільтри <span id="filterCountBadge" class="filter-count-badge" style="display:none;">0</span></button>
+</div>
+
+<div class="filters-panel" id="filtersPanel">
+  <div class="filter-group">
+    <span class="label">Ціна, ₴</span>
+    <div class="price-inputs">
+      <input type="number" id="priceMin" placeholder="Від">
+      <span>—</span>
+      <input type="number" id="priceMax" placeholder="До">
+    </div>
+  </div>
+  <div class="filter-group">
+    <span class="label">Розмір</span>
+    <div class="size-filter-grid" id="sizeFilterGrid"></div>
+  </div>
+  <div class="filter-group filter-group-checkbox">
+    <label>
+      <input type="checkbox" id="discountOnly"> Тільки зі знижкою
+    </label>
+  </div>
+  <button type="button" class="reset-filters-btn" id="resetFiltersBtn">Скинути фільтри</button>
 </div>
 
 <div class="brand-tabs" id="brandTabs">
@@ -247,12 +334,48 @@
       var badge = document.getElementById('cartBadge');
       if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
     } catch(e) {}
+    try {
+      var favs = JSON.parse(localStorage.getItem('kicksFavorites') || '[]');
+      var favBadge = document.getElementById('favBadge');
+      if (favs.length > 0) { favBadge.textContent = favs.length; favBadge.style.display = 'inline-flex'; }
+    } catch(e) {}
   })();
+
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem('kicksFavorites') || '[]'); } catch(e) { return []; }
+  }
+  function toggleFavorite(productId) {
+    let favs = getFavorites();
+    if (favs.includes(productId)) {
+      favs = favs.filter(id => id !== productId);
+    } else {
+      favs.push(productId);
+    }
+    localStorage.setItem('kicksFavorites', JSON.stringify(favs));
+    const favBadge = document.getElementById('favBadge');
+    if (favs.length > 0) { favBadge.textContent = favs.length; favBadge.style.display = 'inline-flex'; }
+    else { favBadge.style.display = 'none'; }
+    return favs.includes(productId);
+  }
 
   let allProducts = [];
   let activeBrandFilter = 'all';
   let searchQuery = '';
   let sortMode = 'default';
+  let priceMinVal = null;
+  let priceMaxVal = null;
+  let selectedSizes = new Set();
+  let discountOnlyVal = false;
+
+  function updateFilterCount() {
+    let count = 0;
+    if (priceMinVal !== null || priceMaxVal !== null) count++;
+    if (selectedSizes.size > 0) count++;
+    if (discountOnlyVal) count++;
+    const badge = document.getElementById('filterCountBadge');
+    if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
+    else { badge.style.display = 'none'; }
+  }
 
   function applyFiltersAndSort(products) {
     let result = activeBrandFilter === 'all'
@@ -267,6 +390,17 @@
       );
     }
 
+    if (priceMinVal !== null) result = result.filter(p => p.price >= priceMinVal);
+    if (priceMaxVal !== null) result = result.filter(p => p.price <= priceMaxVal);
+
+    if (selectedSizes.size > 0) {
+      result = result.filter(p => (p.sizes || []).some(s => selectedSizes.has(s)));
+    }
+
+    if (discountOnlyVal) {
+      result = result.filter(p => p.oldPrice != null && p.oldPrice > p.price);
+    }
+
     result = [...result];
     if (sortMode === 'price-asc') {
       result.sort((a, b) => a.price - b.price);
@@ -278,6 +412,52 @@
 
     return result;
   }
+
+  function renderSizeFilterOptions(products) {
+    const allSizes = [...new Set(products.flatMap(p => p.sizes || []))]
+      .sort((a, b) => parseFloat(a) - parseFloat(b));
+    const container = document.getElementById('sizeFilterGrid');
+    container.innerHTML = allSizes.map(s => `<button type="button" data-size="${s}">${s}</button>`).join('');
+    container.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const size = this.dataset.size;
+        if (selectedSizes.has(size)) { selectedSizes.delete(size); this.classList.remove('active'); }
+        else { selectedSizes.add(size); this.classList.add('active'); }
+        updateFilterCount();
+        renderCards(allProducts);
+      });
+    });
+  }
+
+  document.getElementById('filterToggleBtn').addEventListener('click', function() {
+    document.getElementById('filtersPanel').classList.toggle('visible');
+  });
+
+  document.getElementById('priceMin').addEventListener('input', function() {
+    priceMinVal = this.value ? parseFloat(this.value) : null;
+    updateFilterCount();
+    renderCards(allProducts);
+  });
+  document.getElementById('priceMax').addEventListener('input', function() {
+    priceMaxVal = this.value ? parseFloat(this.value) : null;
+    updateFilterCount();
+    renderCards(allProducts);
+  });
+  document.getElementById('discountOnly').addEventListener('change', function() {
+    discountOnlyVal = this.checked;
+    updateFilterCount();
+    renderCards(allProducts);
+  });
+  document.getElementById('resetFiltersBtn').addEventListener('click', function() {
+    priceMinVal = null; priceMaxVal = null; discountOnlyVal = false;
+    selectedSizes.clear();
+    document.getElementById('priceMin').value = '';
+    document.getElementById('priceMax').value = '';
+    document.getElementById('discountOnly').checked = false;
+    document.querySelectorAll('.size-filter-grid button').forEach(b => b.classList.remove('active'));
+    updateFilterCount();
+    renderCards(allProducts);
+  });
 
   function renderCards(products) {
     const grid = document.getElementById('productsGrid');
@@ -291,9 +471,11 @@
     grid.innerHTML = filtered.map(p => {
       const oldHtml = p.oldPrice ? `<span class="old">${p.oldPrice} ₴</span>` : '';
       const badgeHtml = p.badge ? `<span class="badge">${p.badge}</span>` : '';
+      const isFav = getFavorites().includes(p.id);
       return `
         <a href="product.html?id=${encodeURIComponent(p.id)}" class="card">
           ${badgeHtml}
+          <button type="button" class="fav-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); this.classList.toggle('active', toggleFavorite('${p.id}'));">♥</button>
           <div class="thumb">${productThumbHTML(p)}</div>
           <div class="brand-tag">${p.brand}</div>
           <h3>${p.name}</h3>
@@ -318,6 +500,47 @@
     });
   }
 
+  let bannerIndex = 0;
+  let bannerTimer = null;
+
+  async function loadBanners() {
+    try {
+      const res = await fetch('site-content.json?_=' + Date.now());
+      const data = await res.json();
+      const banners = (data.banners || []).filter(b => b.enabled !== false);
+      if (banners.length === 0) return;
+
+      const carousel = document.getElementById('bannerCarousel');
+      const track = document.getElementById('bannerTrack');
+      const dots = document.getElementById('bannerDots');
+
+      track.innerHTML = banners.map(b => {
+        const inner = `<img src="${b.imageUrl}" alt="${b.title || ''}">${b.title ? `<div class="banner-title">${b.title}</div>` : ''}`;
+        return b.link
+          ? `<a href="${b.link}" class="banner-slide">${inner}</a>`
+          : `<div class="banner-slide">${inner}</div>`;
+      }).join('');
+
+      if (banners.length > 1) {
+        dots.innerHTML = banners.map((_, i) => `<button data-i="${i}" class="${i === 0 ? 'active' : ''}"></button>`).join('');
+        dots.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => goToBanner(parseInt(btn.dataset.i), banners.length));
+        });
+        bannerTimer = setInterval(() => goToBanner((bannerIndex + 1) % banners.length, banners.length), 5000);
+      }
+
+      carousel.style.display = 'block';
+    } catch (err) {
+      console.warn('Банери не завантажено:', err);
+    }
+  }
+
+  function goToBanner(index, total) {
+    bannerIndex = index;
+    document.getElementById('bannerTrack').style.transform = `translateX(-${index * 100}%)`;
+    document.querySelectorAll('.banner-dots button').forEach((b, i) => b.classList.toggle('active', i === index));
+  }
+
   async function renderCatalog() {
     const grid = document.getElementById('productsGrid');
     try {
@@ -332,6 +555,7 @@
       }
 
       renderBrandTabs(allProducts);
+      renderSizeFilterOptions(allProducts);
       renderCards(allProducts);
     } catch (err) {
       console.error('Помилка завантаження каталогу:', err);
@@ -350,6 +574,7 @@
   });
 
   renderCatalog();
+  loadBanners();
 </script>
 
 </body>

@@ -177,6 +177,7 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
+    <a href="favorites.html" class="cart-link">♥ Обране <span class="cart-badge" id="favBadge">0</span></a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
     <a href="https://t.me/твій_нік_тут" class="nav-cta">💬 Написати нам</a>
@@ -232,6 +233,11 @@
       var cart = JSON.parse(localStorage.getItem('kicksCart') || '[]');
       var badge = document.getElementById('cartBadge');
       if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
+    } catch(e) {}
+    try {
+      var favs = JSON.parse(localStorage.getItem('kicksFavorites') || '[]');
+      var favBadge = document.getElementById('favBadge');
+      if (favs.length > 0) { favBadge.textContent = favs.length; favBadge.style.display = 'inline-flex'; }
     } catch(e) {}
   })();
 
@@ -323,7 +329,10 @@
               <div class="size-grid" id="sizeGrid">${sizesHtml}</div>
             </div>
             <div class="added-toast" id="addedToast">✓ Додано в кошик — <a href="cart.html" style="color:var(--cone);text-decoration:underline;">перейти до кошика</a></div>
-            <button type="button" class="btn-primary" id="addToCartBtn">🛒 ДОДАТИ В КОШИК</button>
+            <div style="display:flex;gap:10px;margin-bottom:12px;">
+              <button type="button" class="btn-primary" id="addToCartBtn" style="margin-bottom:0;flex:1;">🛒 ДОДАТИ В КОШИК</button>
+              <button type="button" id="favToggleBtn" title="Додати в обране" style="width:60px;flex-shrink:0;border:3px solid var(--asphalt);background:var(--chalk);cursor:pointer;font-size:20px;">♡</button>
+            </div>
             <a href="cart.html" class="btn-secondary">Переглянути кошик →</a>
           </div>
         </section>
@@ -381,6 +390,32 @@
           console.error('Помилка додавання в кошик:', err);
           alert('Не вдалося додати товар у кошик. Можливо, у браузері вимкнено localStorage (приватний режим?). Помилка: ' + err.message);
         }
+      });
+
+      // favorites toggle
+      function getFavorites() {
+        try { return JSON.parse(localStorage.getItem('kicksFavorites') || '[]'); } catch(e) { return []; }
+      }
+      const favBtn = document.getElementById('favToggleBtn');
+      function refreshFavBtn() {
+        const isFav = getFavorites().includes(product.id);
+        favBtn.textContent = isFav ? '♥' : '♡';
+        favBtn.style.background = isFav ? 'var(--cone)' : 'var(--chalk)';
+        favBtn.style.color = isFav ? 'var(--chalk)' : 'var(--asphalt)';
+      }
+      refreshFavBtn();
+      favBtn.addEventListener('click', function() {
+        let favs = getFavorites();
+        if (favs.includes(product.id)) {
+          favs = favs.filter(id => id !== product.id);
+        } else {
+          favs.push(product.id);
+        }
+        localStorage.setItem('kicksFavorites', JSON.stringify(favs));
+        refreshFavBtn();
+        const favBadge = document.getElementById('favBadge');
+        if (favs.length > 0) { favBadge.textContent = favs.length; favBadge.style.display = 'inline-flex'; }
+        else { favBadge.style.display = 'none'; }
       });
 
       // related products

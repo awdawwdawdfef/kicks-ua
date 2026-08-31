@@ -133,6 +133,7 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
+    <a href="favorites.html" class="cart-link">♥ Обране <span class="cart-badge" id="favBadge">0</span></a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
   </div>
@@ -209,7 +210,7 @@
         <span class="hint" id="cityHint"></span>
 
         <div class="conditional-field" id="branchField">
-          <span class="label">Відділення / поштомат</span>
+          <span class="label" id="branchLabel">Відділення / поштомат</span>
           <select name="branchNumber" id="branchSelect">
             <option value="">Спочатку вкажи місто вище</option>
           </select>
@@ -374,6 +375,23 @@
   let cityRefMap = {};
   let cityDebounceTimer = null;
 
+  function updateBranchFieldForCarrier() {
+    const branchLabel = document.getElementById('branchLabel');
+    const branchHint = document.getElementById('branchHint');
+    if (carrierSelect.value === 'Укрпошта') {
+      branchLabel.textContent = 'Поштовий індекс';
+      branchManualInput.placeholder = 'Наприклад: 49000';
+      branchManualInput.setAttribute('maxlength', '5');
+      branchManualInput.setAttribute('inputmode', 'numeric');
+      branchHint.textContent = 'Вкажи 5-значний поштовий індекс відділення Укрпошти у своєму місті.';
+    } else {
+      branchLabel.textContent = 'Відділення / поштомат';
+      branchManualInput.placeholder = 'Впиши номер відділення вручну';
+      branchManualInput.removeAttribute('maxlength');
+      branchManualInput.removeAttribute('inputmode');
+    }
+  }
+
   deliveryTypeSelect.addEventListener('change', function(){
     if (!this.value) { cityWrapper.classList.remove('visible'); return; }
     cityWrapper.classList.add('visible');
@@ -384,16 +402,30 @@
       addressField.classList.add('visible');
     } else {
       branchField.classList.add('visible');
+      updateBranchFieldForCarrier();
       if (carrierSelect.value !== 'Нова пошта' || !proxyConfigured) {
         branchSelect.style.display = 'none';
         branchManualInput.style.display = 'block';
         branchManualInput.name = 'branchNumber';
-        if (carrierSelect.value === 'Укрпошта') {
-          document.getElementById('branchHint').textContent = 'Автопідбір відділень доступний лише для Нової пошти — впиши номер вручну.';
-        }
       } else {
         branchSelect.style.display = 'block';
         branchManualInput.style.display = 'none';
+      }
+    }
+  });
+
+  carrierSelect.addEventListener('change', function() {
+    if (deliveryTypeSelect.value && deliveryTypeSelect.value !== "Кур'єром за адресою") {
+      updateBranchFieldForCarrier();
+      if (this.value !== 'Нова пошта' || !proxyConfigured) {
+        branchSelect.style.display = 'none';
+        branchManualInput.style.display = 'block';
+        branchManualInput.name = 'branchNumber';
+      } else {
+        branchSelect.style.display = 'block';
+        branchManualInput.style.display = 'none';
+        branchManualInput.removeAttribute('name');
+        branchSelect.name = 'branchNumber';
       }
     }
   });

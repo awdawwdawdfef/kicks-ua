@@ -203,6 +203,12 @@
     position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;
     background:#B23A2E;color:#fff;border:none;cursor:pointer;
   }
+  .reorder-controls{display:flex;gap:8px;margin-top:10px;}
+  .reorder-controls button{
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 10px;cursor:pointer;
+    border:1.5px solid var(--asphalt);background:var(--canvas);
+  }
+  .reorder-controls button:hover{background:var(--asphalt);color:var(--chalk);}
 
   @media (max-width:600px){
     .editor .row2, .editor .row3{grid-template-columns:1fr;}
@@ -361,6 +367,7 @@
     <div class="status-msg" id="ordersStatusMsg"></div>
     <div class="toolbar">
       <button class="btn" id="refreshOrdersBtn">↻ Оновити список замовлень</button>
+      <button class="btn btn-primary" id="exportCsvBtn">⬇ Експортувати в CSV</button>
     </div>
     <div id="ordersList"><p class="label">Натисни "Оновити список", щоб завантажити замовлення.</p></div>
   </div>
@@ -901,6 +908,43 @@
     }).join('');
   }
 
+  document.getElementById('exportCsvBtn').addEventListener('click', function() {
+    if (orders.length === 0) {
+      alert('Немає замовлень для експорту.');
+      return;
+    }
+    const headers = ['Дата', 'Ім\'я', 'Телефон', 'Товари', 'Сума', 'Місто', 'Служба доставки', 'Тип отримання', 'Відділення', 'Адреса', 'Оплата', 'Статус', 'Коментар'];
+    const rows = orders.map(o => [
+      o.createdAt ? new Date(o.createdAt).toLocaleString('uk-UA') : '',
+      o.customerName || '',
+      o.phone || '',
+      (o.items || []).map(it => `${it.name} (${it.size})`).join('; '),
+      o.total || 0,
+      o.city || '',
+      o.carrier || '',
+      o.deliveryType || '',
+      o.branchNumber || '',
+      o.address || '',
+      o.payment || '',
+      o.status || '',
+      o.comment || ''
+    ]);
+
+    function csvEscape(val) {
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    }
+
+    const csvContent = [headers, ...rows].map(row => row.map(csvEscape).join(',')).join('\r\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kicks-orders-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
   window.updateOrderStatus = async function(index, newStatus) {
     orders[index].status = newStatus;
     try {
@@ -942,7 +986,41 @@
       </div>
     `).join('');
 
+    if (!siteContent.workingHours) siteContent.workingHours = { enabled: false, text: '' };
+    if (!siteContent.infoBlocks) siteContent.infoBlocks = [];
+
+    const blocksHtml = siteContent.infoBlocks.map((b, i) => `
+      <div class="method-item">
+        <button class="remove-method" onclick="removeInfoBlock(${i})" title="Видалити блок повністю">×</button>
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
+          <input type="checkbox" style="width:auto;margin:0;" ${b.enabled !== false ? 'checked' : ''} onchange="toggleInfoBlock(${i}, this.checked)">
+          Показувати цей блок на сайті
+        </label>
+        <label>Заголовок блоку</label>
+        <input type="text" value="${b.title}" onchange="updateInfoBlock(${i}, 'title', this.value)">
+        <label>Текст</label>
+        <textarea style="min-height:100px;" onchange="updateInfoBlock(${i}, 'text', this.value)">${b.text}</textarea>
+        <label>Стиль оформлення</label>
+        <select onchange="updateInfoBlock(${i}, 'style', this.value)">
+          <option value="normal" ${b.style !== 'warn' ? 'selected' : ''}>Звичайний</option>
+          <option value="warn" ${b.style === 'warn' ? 'selected' : ''}>Виділений (темний фон, як важливе попередження)</option>
+        </select>
+        <div class="reorder-controls">
+          ${i > 0 ? `<button type="button" onclick="moveInfoBlock(${i}, -1)">↑ Вище</button>` : ''}
+          ${i < siteContent.infoBlocks.length - 1 ? `<button type="button" onclick="moveInfoBlock(${i}, 1)">↓ Нижче</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+
     area.innerHTML = `
+      <div class="content-block">
+        <h4>Банери на головній сторінці</h4>
+        <p class="label" style="margin-bottom:14px;">Зображення для каруселі на головній — можна додати кілька, вони будуть змінюватись по черзі</p>
+        <div id="bannersEditorList"></div>
+        <div class="upload-zone" id="bannerUploadZone">Натисни, щоб завантажити нове зображення банера</div>
+        <input type="file" id="bannerFileInput" accept="image/*" style="display:none;">
+      </div>
+
       <div class="content-block">
         <h4>Способи доставки</h4>
         ${methodsHtml}
@@ -950,30 +1028,89 @@
       </div>
 
       <div class="content-block">
-        <h4>Умови відправлення (важливе повідомлення зверху)</h4>
-        <label>Заголовок</label>
-        <input type="text" id="c_shippingTitle" value="${siteContent.shippingNotice.title}">
-        <label>Текст</label>
-        <textarea id="c_shippingText" style="min-height:120px;">${siteContent.shippingNotice.text}</textarea>
+        <h4>Графік роботи (необов'язковий бейдж на сторінці доставки)</h4>
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
+          <input type="checkbox" id="c_hoursEnabled" style="width:auto;margin:0;" ${siteContent.workingHours.enabled ? 'checked' : ''}>
+          Показувати графік роботи на сайті
+        </label>
+        <label>Текст графіку</label>
+        <input type="text" id="c_hoursText" value="${siteContent.workingHours.text || ''}" placeholder="Пн-Сб: 9:00 - 18:00 · Нд: вихідний">
       </div>
 
       <div class="content-block">
-        <h4>Умови обміну / повернення</h4>
-        <label>Заголовок</label>
-        <input type="text" id="c_returnTitle" value="${siteContent.returnPolicy.title}">
-        <label>Текст</label>
-        <textarea id="c_returnText" style="min-height:120px;">${siteContent.returnPolicy.text}</textarea>
-      </div>
-
-      <div class="content-block">
-        <h4>Гарантія оригінальності</h4>
-        <label>Заголовок</label>
-        <input type="text" id="c_qualityTitle" value="${siteContent.qualityGuarantee.title}">
-        <label>Текст</label>
-        <textarea id="c_qualityText">${siteContent.qualityGuarantee.text}</textarea>
+        <h4>Інформаційні блоки сторінки "Доставка"</h4>
+        <p class="label" style="margin-bottom:14px;">Тут можна редагувати, вимикати, видаляти або додавати будь-які блоки (гарантія, умови повернення тощо)</p>
+        ${blocksHtml}
+        <button type="button" class="add-spec-btn" onclick="addInfoBlock()">+ Додати новий блок</button>
       </div>
     `;
+    renderBannersEditor();
   }
+
+  function renderBannersEditor() {
+    if (!siteContent.banners) siteContent.banners = [];
+    const container = document.getElementById('bannersEditorList');
+    if (!container) return;
+    container.innerHTML = siteContent.banners.map((b, i) => `
+      <div class="method-item">
+        <button class="remove-method" onclick="removeBanner(${i})">×</button>
+        <img src="../${b.imageUrl}" style="width:100%;max-width:300px;height:auto;border:1.5px solid var(--stitch);margin-bottom:10px;display:block;">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
+          <input type="checkbox" style="width:auto;margin:0;" ${b.enabled !== false ? 'checked' : ''} onchange="toggleBanner(${i}, this.checked)">
+          Показувати цей банер
+        </label>
+        <label>Заголовок на банері (необов'язково)</label>
+        <input type="text" value="${b.title || ''}" onchange="updateBanner(${i}, 'title', this.value)">
+        <label>Посилання при кліку (необов'язково — наприклад product.html?id=... або https://...)</label>
+        <input type="text" value="${b.link || ''}" onchange="updateBanner(${i}, 'link', this.value)">
+      </div>
+    `).join('');
+  }
+
+  window.updateBanner = function(index, field, value) {
+    siteContent.banners[index][field] = value;
+  };
+  window.toggleBanner = function(index, checked) {
+    siteContent.banners[index].enabled = checked;
+  };
+  window.removeBanner = function(index) {
+    if (!confirm('Видалити цей банер?')) return;
+    siteContent.banners.splice(index, 1);
+    renderBannersEditor();
+  };
+
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'bannerUploadZone') {
+      document.getElementById('bannerFileInput').click();
+    }
+  });
+
+  document.addEventListener('change', async function(e) {
+    if (e.target && e.target.id === 'bannerFileInput' && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = async function(ev) {
+        try {
+          showStatus('Завантажуємо банер...', 'loading', 'contentStatusMsg');
+          const base64 = ev.target.result.split(',')[1];
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const path = `images/banners/${Date.now()}-${safeName}`;
+          await githubRequest(path, {
+            method: 'PUT',
+            body: JSON.stringify({ message: 'Upload banner image', content: base64 })
+          });
+          if (!siteContent.banners) siteContent.banners = [];
+          siteContent.banners.push({ imageUrl: path, title: '', link: '', enabled: true });
+          renderBannersEditor();
+          hideStatus('contentStatusMsg');
+        } catch (err) {
+          showStatus('Помилка завантаження банера: ' + err.message, 'error', 'contentStatusMsg');
+        }
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    }
+  });
 
   window.updateMethod = function(index, field, value) {
     siteContent.deliveryMethods[index][field] = value;
@@ -987,16 +1124,40 @@
     renderContentEditor();
   };
 
+  window.updateInfoBlock = function(index, field, value) {
+    siteContent.infoBlocks[index][field] = value;
+  };
+  window.toggleInfoBlock = function(index, checked) {
+    siteContent.infoBlocks[index].enabled = checked;
+  };
+  window.removeInfoBlock = function(index) {
+    if (!confirm('Видалити цей блок повністю? Його можна буде відновити тільки заново написавши текст.')) return;
+    siteContent.infoBlocks.splice(index, 1);
+    renderContentEditor();
+  };
+  window.addInfoBlock = function() {
+    siteContent.infoBlocks.push({
+      id: 'block-' + Date.now(),
+      title: 'Новий блок',
+      text: 'Текст блоку...',
+      style: 'normal',
+      enabled: true
+    });
+    renderContentEditor();
+  };
+  window.moveInfoBlock = function(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= siteContent.infoBlocks.length) return;
+    [siteContent.infoBlocks[index], siteContent.infoBlocks[newIndex]] = [siteContent.infoBlocks[newIndex], siteContent.infoBlocks[index]];
+    renderContentEditor();
+  };
+
   document.getElementById('saveContentBtn').addEventListener('click', async function() {
     this.disabled = true;
     showStatus('Зберігаємо...', 'loading', 'contentStatusMsg');
     try {
-      siteContent.shippingNotice.title = document.getElementById('c_shippingTitle').value;
-      siteContent.shippingNotice.text = document.getElementById('c_shippingText').value;
-      siteContent.returnPolicy.title = document.getElementById('c_returnTitle').value;
-      siteContent.returnPolicy.text = document.getElementById('c_returnText').value;
-      siteContent.qualityGuarantee.title = document.getElementById('c_qualityTitle').value;
-      siteContent.qualityGuarantee.text = document.getElementById('c_qualityText').value;
+      siteContent.workingHours.enabled = document.getElementById('c_hoursEnabled').checked;
+      siteContent.workingHours.text = document.getElementById('c_hoursText').value;
 
       const content = JSON.stringify(siteContent, null, 2);
       const base64Content = btoa(unescape(encodeURIComponent(content)));

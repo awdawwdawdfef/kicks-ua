@@ -53,6 +53,10 @@
   .block.warn p{color:var(--chalk);}
   .block.warn .inner{max-width:680px;}
   .loading-msg{padding:0 6% 40px;font-family:'JetBrains Mono',monospace;color:var(--sole);}
+  .hours-badge{
+    margin:0 6% 30px;padding:12px 20px;background:var(--chalk);border:1.5px solid var(--asphalt);
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
 
   footer{padding:32px 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:2px solid var(--asphalt);}
   footer .foot-links{display:flex;gap:20px;font-family:'JetBrains Mono',monospace;font-size:12px;}
@@ -65,6 +69,7 @@
   <a href="index.html" class="logo">KICKS<span>.UA</span></a>
   <div class="nav-links">
     <a href="index.html">Каталог</a>
+    <a href="favorites.html" class="cart-link">♥ Обране <span class="cart-badge" id="favBadge">0</span></a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="https://t.me/твій_нік_тут" class="nav-cta">💬 Написати нам</a>
   </div>
@@ -93,6 +98,11 @@
       var badge = document.getElementById('cartBadge');
       if (cart.length > 0) { badge.textContent = cart.length; badge.style.display = 'inline-flex'; }
     } catch(e) {}
+    try {
+      var favs = JSON.parse(localStorage.getItem('kicksFavorites') || '[]');
+      var favBadge = document.getElementById('favBadge');
+      if (favs.length > 0) { favBadge.textContent = favs.length; favBadge.style.display = 'inline-flex'; }
+    } catch(e) {}
   })();
 
   async function renderContent() {
@@ -109,22 +119,24 @@
           <p>${m.text}</p>
         </div>`).join('');
 
+      const hoursHtml = (data.workingHours && data.workingHours.enabled)
+        ? `<div class="hours-badge">🕐 ${data.workingHours.text}</div>`
+        : '';
+
+      const blocksHtml = (data.infoBlocks || [])
+        .filter(b => b.enabled !== false)
+        .map(b => `
+          <div class="block ${b.style === 'warn' ? 'warn' : ''}">
+            <div class="inner">
+              <h3>${b.title}</h3>
+              <p>${b.text}</p>
+            </div>
+          </div>`).join('');
+
       area.innerHTML = `
+        ${hoursHtml}
         <div class="methods">${methodsHtml}</div>
-        <div class="block warn">
-          <div class="inner">
-            <h3>${data.shippingNotice.title}</h3>
-            <p>${data.shippingNotice.text}</p>
-          </div>
-        </div>
-        <div class="block">
-          <h3>${data.returnPolicy.title}</h3>
-          <p>${data.returnPolicy.text}</p>
-        </div>
-        <div class="block">
-          <h3>${data.qualityGuarantee.title}</h3>
-          <p>${data.qualityGuarantee.text}</p>
-        </div>
+        ${blocksHtml}
       `;
     } catch (err) {
       console.error('Помилка завантаження контенту:', err);
