@@ -2,6 +2,7 @@
   {
     "id": "nike-acg-terra-antarktik",
     "brand": "Nike ACG",
+    "category": "",
     "name": "Terra Antarktik Low GTX Grey Black",
     "price": 2400,
     "oldPrice": null,
@@ -23,21 +24,20 @@
       "44",
       "45"
     ],
+    "stock": null,
     "images": [
-      "images/nike-acg/1.jpg",
-      "images/nike-acg/2.jpg",
-      "images/nike-acg/3.jpg",
-      "images/nike-acg/4.jpg",
-      "images/nike-acg/5.jpg",
-      "images/nike-acg/6.jpg",
-      "images/nike-acg/7.jpg",
-      "images/nike-acg/8.jpg",
-      "images/nike-acg/9.jpg"
+      "images/nike-acg-terra-antarktik/1788164497553-____________PNG_2.png",
+      "images/nike-acg-terra-antarktik/1788164499588-____________PNG_4.png",
+      "images/nike-acg-terra-antarktik/1788164501316-____________PNG_3.png",
+      "images/nike-acg-terra-antarktik/1788164503062-____________PNG.png",
+      "images/nike-acg-terra-antarktik/1788164504924-____________PNG_8.png",
+      "images/nike-acg-terra-antarktik/1788164507221-____________PNG_5.png",
+      "images/nike-acg-terra-antarktik/1788164508998-____________PNG_9.png",
+      "images/nike-acg-terra-antarktik/1788164510540-____________PNG_6.png",
+      "images/nike-acg-terra-antarktik/1788164513304-____________PNG_7.png"
     ],
     "active": true,
-    "createdAt": "2026-08-01T12:00:00Z",
-    "stock": null,
-    "category": ""
+    "createdAt": "2026-08-01T12:00:00Z"
   },
   {
     "id": "nike-air-max-90",
