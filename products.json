@@ -2,7 +2,6 @@
   {
     "id": "nike-acg-terra-antarktik",
     "brand": "Nike ACG",
-    "category": "",
     "name": "Terra Antarktik Low GTX Grey Black",
     "price": 2400,
     "oldPrice": null,
@@ -24,57 +23,49 @@
       "44",
       "45"
     ],
-    "stock": null,
     "images": [
-      "images/nike-acg-terra-antarktik/1788164510540-____________PNG_6.png",
-      "images/nike-acg-terra-antarktik/1788164508998-____________PNG_9.png",
-      "images/nike-acg-terra-antarktik/1788164497553-____________PNG_2.png",
-      "images/nike-acg-terra-antarktik/1788164499588-____________PNG_4.png",
-      "images/nike-acg-terra-antarktik/1788164501316-____________PNG_3.png",
-      "images/nike-acg-terra-antarktik/1788164503062-____________PNG.png",
-      "images/nike-acg-terra-antarktik/1788164504924-____________PNG_8.png",
-      "images/nike-acg-terra-antarktik/1788164507221-____________PNG_5.png",
-      "images/nike-acg-terra-antarktik/1788164513304-____________PNG_7.png"
+      "images/nike-acg/1.jpg",
+      "images/nike-acg/2.jpg",
+      "images/nike-acg/3.jpg",
+      "images/nike-acg/4.jpg",
+      "images/nike-acg/5.jpg",
+      "images/nike-acg/6.jpg",
+      "images/nike-acg/7.jpg",
+      "images/nike-acg/8.jpg",
+      "images/nike-acg/9.jpg"
     ],
     "active": true,
-    "createdAt": "2026-08-01T12:00:00Z"
+    "createdAt": "2026-08-01T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "nike-air-max-90",
-    "brand": "Lacoste",
-    "category": "",
-    "name": "Elite Active Black White",
-    "price": 2400,
+    "brand": "Nike",
+    "name": "Air Max 90",
+    "price": 2690,
     "oldPrice": 3200,
-    "badge": null,
-    "description": "▪️Виробництво : В'єтнам\n▪️Матеріал верху  : шкіра , натуральна замша \n▪️Колір : чорний\n▪️Підошва : піна , гумовий протектор\n▪️Розміри:  41-45\n▪️Сезон :  весна / літо / осінь  \n📦Коробка Lacoste , пергамент",
+    "badge": "−16%",
+    "description": "Класика 1990 року — видима амортизуюча подушка Air, шкіряний верх із текстильними вставками. Підходить на щодень і для міста.",
     "specs": {},
-    "sizeChart": "▫️41 = 25.5 см ; ▫️42 = 26 см ; ▫️43 = 27 см ; ▫️44 = 27,5 см ; ▫️45 = 28 см .",
+    "sizeChart": "",
     "sizes": [
+      "40",
       "41",
       "42",
       "43",
       "44",
       "45"
     ],
-    "stock": null,
-    "images": [
-      "images/nike-air-max-90/1788207341636-____________PNG_6.png",
-      "images/nike-air-max-90/1788207325535-____________PNG_4.png",
-      "images/nike-air-max-90/1788207327604-____________PNG_7.png",
-      "images/nike-air-max-90/1788207329666-____________PNG_3.png",
-      "images/nike-air-max-90/1788207331504-____________PNG.png",
-      "images/nike-air-max-90/1788207333452-____________PNG_5.png",
-      "images/nike-air-max-90/1788207335292-____________PNG_2.png",
-      "images/nike-air-max-90/1788207337245-____________PNG_8.png",
-      "images/nike-air-max-90/1788207339693-____________PNG_9.png"
-    ],
-    "active": true,
+    "images": [],
     "placeholderColor": {
       "body": "#FAF8F3",
       "accent": "#FF4B12"
     },
-    "createdAt": "2026-08-04T12:00:00Z"
+    "active": true,
+    "createdAt": "2026-08-04T12:00:00Z",
+    "stock": null,
+    "category": ""
   },
   {
     "id": "adidas-samba-og",
@@ -215,39 +206,5 @@
     "createdAt": "2026-08-19T12:00:00Z",
     "stock": null,
     "category": ""
-  },
-  {
-    "id": "adidas-ivy-park-savage-v4-black-white-mthokoi8",
-    "brand": "Adidas",
-    "category": "",
-    "name": "Ivy Park Savage V4 Black White",
-    "price": 2000,
-    "oldPrice": null,
-    "badge": null,
-    "description": "▪️Виробництво : В'єтнам \n▪️Матеріал верху : шкіра  , Waterproof, рефлективні вставки\n▪️Колір : чорний\n▪️Підошва : піна , гумовий протектор \n▪️Розміри : 41-46\n▪️Сезон : весна / літо /осінь\n📦Коробка Adidas , фірмовий папір",
-    "specs": {},
-    "sizeChart": "▫️41 = 26 см ; ▫️42 = 26,5 см ; ▫️43 = 27 см ; ▫️44 = 28 см ; ▫️45 = 28,5 см ; ▫️46 = 29,5 см .",
-    "sizes": [
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46"
-    ],
-    "stock": null,
-    "images": [
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207515420-____________PNG_6.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207498514-____________PNG.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207501542-____________PNG_2.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207503537-____________PNG_5.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207505248-____________PNG_3.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207506976-____________PNG_4.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207508966-____________PNG_8.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207511128-____________PNG_7.png",
-      "images/adidas-ivy-park-savage-v4-black-white-mthokoi8/1788207513473-____________PNG_9.png"
-    ],
-    "active": true,
-    "createdAt": "2026-08-31T20:18:37.463Z"
   }
 ]

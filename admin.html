@@ -285,7 +285,7 @@
       <h4>Основне</h4>
       <div class="row2">
         <div>
-          <label>Бренд</label>
+          <label>Бренд *</label>
           <input type="text" id="f_brand" placeholder="Nike">
         </div>
         <div>
@@ -293,12 +293,12 @@
           <input type="text" id="f_category" placeholder="Кросівки / Черевики / ...">
         </div>
       </div>
-      <label>Назва моделі</label>
+      <label>Назва моделі *</label>
       <input type="text" id="f_name" placeholder="Air Max 90">
 
       <div class="row3">
         <div>
-          <label>Ціна (₴)</label>
+          <label>Ціна (₴) *</label>
           <input type="number" id="f_price" placeholder="2690">
         </div>
         <div>
@@ -316,7 +316,7 @@
 
       <div class="row2">
         <div>
-          <label>Розміри (через кому)</label>
+          <label>Розміри (через кому) *</label>
           <input type="text" id="f_sizes" placeholder="40, 41, 42, 43, 44, 45">
         </div>
         <div>
@@ -333,7 +333,7 @@
       <button type="button" class="add-spec-btn" id="addSpecBtn">+ Додати характеристику</button>
 
       <h4>Фото товару</h4>
-      <p class="label" style="margin-bottom:10px;">Перше фото зі списку — головне (показується в каталозі)</p>
+      <p class="label" style="margin-bottom:10px;">Перше фото зі списку — головне (показується в каталозі). Після зміни порядку фото ОБОВ'ЯЗКОВО натисни "Зберегти товар" внизу — інакше зміни не запишуться.</p>
       <div class="image-list" id="imageList"></div>
       <div class="upload-zone" id="uploadZone">Натисни, щоб обрати фото (можна кілька одразу)</div>
       <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
@@ -782,8 +782,14 @@
     const cleanSpecs = {};
     Object.entries(currentSpecs).forEach(([k, v]) => { if (k.trim()) cleanSpecs[k.trim()] = v; });
 
-    if (!brand || !name || !price || sizes.length === 0) {
-      showStatus('Заповни принаймні бренд, назву, ціну і розміри.', 'error');
+    const missing = [];
+    if (!brand) missing.push('Бренд');
+    if (!name) missing.push('Назва моделі');
+    if (!price || isNaN(price)) missing.push('Ціна (перевір, що вписав число саме в поле "Ціна", а не "Стара ціна")');
+    if (sizes.length === 0) missing.push('Розміри');
+
+    if (missing.length > 0) {
+      showStatus('Не заповнено: ' + missing.join(', ') + '.', 'error');
       return;
     }
 
@@ -1028,6 +1034,25 @@
       </div>
 
       <div class="content-block">
+        <h4>Контакти (сторінка «Контакти» + кнопка «Написати нам» по всьому сайту)</h4>
+        <label>Telegram нікнейм (без @, наприклад ivan_kicks)</label>
+        <input type="text" id="c_telegramHandle" value="${(siteContent.contacts && siteContent.contacts.telegramHandle) || ''}" placeholder="ivan_kicks">
+        <label>Телефон (необов'язково)</label>
+        <input type="text" id="c_phone" value="${(siteContent.contacts && siteContent.contacts.phone) || ''}" placeholder="+380 XX XXX XX XX">
+        <label>Email (необов'язково)</label>
+        <input type="text" id="c_email" value="${(siteContent.contacts && siteContent.contacts.email) || ''}" placeholder="shop@example.com">
+        <label>Адреса (необов'язково)</label>
+        <input type="text" id="c_address" value="${(siteContent.contacts && siteContent.contacts.address) || ''}" placeholder="Місто, вулиця (якщо є фізична точка)">
+      </div>
+
+      <div class="content-block">
+        <h4>Політика конфіденційності</h4>
+        <p class="label" style="margin-bottom:14px;">Ця сторінка потрібна для проходження модерації Google Ads і Meta Ads</p>
+        <label>Текст політики</label>
+        <textarea id="c_privacyText" style="min-height:280px;">${siteContent.privacyPolicyText || ''}</textarea>
+      </div>
+
+      <div class="content-block">
         <h4>Графік роботи (необов'язковий бейдж на сторінці доставки)</h4>
         <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
           <input type="checkbox" id="c_hoursEnabled" style="width:auto;margin:0;" ${siteContent.workingHours.enabled ? 'checked' : ''}>
@@ -1047,25 +1072,58 @@
     renderBannersEditor();
   }
 
+  const AVAILABLE_PAGES = [
+    { id: 'index', label: 'Головна (каталог)' },
+    { id: 'product', label: 'Сторінка товару' },
+    { id: 'cart', label: 'Кошик' },
+    { id: 'favorites', label: 'Обране' },
+    { id: 'delivery', label: 'Доставка' },
+    { id: 'order', label: 'Оформлення замовлення' },
+    { id: 'contacts', label: 'Контакти' },
+    { id: 'privacy', label: 'Політика конфіденційності' }
+  ];
+
   function renderBannersEditor() {
     if (!siteContent.banners) siteContent.banners = [];
     const container = document.getElementById('bannersEditorList');
     if (!container) return;
-    container.innerHTML = siteContent.banners.map((b, i) => `
-      <div class="method-item">
-        <button class="remove-method" onclick="removeBanner(${i})">×</button>
-        <img src="../${b.imageUrl}" style="width:100%;max-width:300px;height:auto;border:1.5px solid var(--stitch);margin-bottom:10px;display:block;">
-        <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
-          <input type="checkbox" style="width:auto;margin:0;" ${b.enabled !== false ? 'checked' : ''} onchange="toggleBanner(${i}, this.checked)">
-          Показувати цей банер
+    container.innerHTML = siteContent.banners.map((b, i) => {
+      if (!b.pages) b.pages = ['index'];
+      const pagesCheckboxes = AVAILABLE_PAGES.map(p => `
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;font-size:12.5px;margin-bottom:6px;">
+          <input type="checkbox" style="width:auto;margin:0;" ${b.pages.includes(p.id) ? 'checked' : ''} onchange="toggleBannerPage(${i}, '${p.id}', this.checked)">
+          ${p.label}
         </label>
-        <label>Заголовок на банері (необов'язково)</label>
-        <input type="text" value="${b.title || ''}" onchange="updateBanner(${i}, 'title', this.value)">
-        <label>Посилання при кліку (необов'язково — наприклад product.html?id=... або https://...)</label>
-        <input type="text" value="${b.link || ''}" onchange="updateBanner(${i}, 'link', this.value)">
-      </div>
-    `).join('');
+      `).join('');
+
+      return `
+        <div class="method-item">
+          <button class="remove-method" onclick="removeBanner(${i})">×</button>
+          <img src="../${b.imageUrl}" style="width:100%;max-width:300px;height:auto;border:1.5px solid var(--stitch);margin-bottom:10px;display:block;">
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;margin-bottom:10px;">
+            <input type="checkbox" style="width:auto;margin:0;" ${b.enabled !== false ? 'checked' : ''} onchange="toggleBanner(${i}, this.checked)">
+            Показувати цей банер
+          </label>
+          <label>Заголовок на банері (необов'язково)</label>
+          <input type="text" value="${b.title || ''}" onchange="updateBanner(${i}, 'title', this.value)">
+          <label>Посилання при кліку (необов'язково — наприклад product.html?id=... або https://...)</label>
+          <input type="text" value="${b.link || ''}" onchange="updateBanner(${i}, 'link', this.value)">
+          <label>На яких сторінках показувати</label>
+          <div style="margin-bottom:6px;">${pagesCheckboxes}</div>
+        </div>
+      `;
+    }).join('');
   }
+
+  window.toggleBannerPage = function(index, pageId, checked) {
+    const banner = siteContent.banners[index];
+    if (!banner.pages) banner.pages = [];
+    if (checked) {
+      if (!banner.pages.includes(pageId)) banner.pages.push(pageId);
+    } else {
+      banner.pages = banner.pages.filter(p => p !== pageId);
+    }
+  };
 
   window.updateBanner = function(index, field, value) {
     siteContent.banners[index][field] = value;
@@ -1100,7 +1158,7 @@
             body: JSON.stringify({ message: 'Upload banner image', content: base64 })
           });
           if (!siteContent.banners) siteContent.banners = [];
-          siteContent.banners.push({ imageUrl: path, title: '', link: '', enabled: true });
+          siteContent.banners.push({ imageUrl: path, title: '', link: '', enabled: true, pages: ['index'] });
           renderBannersEditor();
           hideStatus('contentStatusMsg');
         } catch (err) {
@@ -1156,6 +1214,13 @@
     this.disabled = true;
     showStatus('Зберігаємо...', 'loading', 'contentStatusMsg');
     try {
+      if (!siteContent.contacts) siteContent.contacts = {};
+      siteContent.contacts.telegramHandle = document.getElementById('c_telegramHandle').value.trim().replace(/^@/, '');
+      siteContent.contacts.phone = document.getElementById('c_phone').value.trim();
+      siteContent.contacts.email = document.getElementById('c_email').value.trim();
+      siteContent.contacts.address = document.getElementById('c_address').value.trim();
+      siteContent.privacyPolicyText = document.getElementById('c_privacyText').value;
+
       siteContent.workingHours.enabled = document.getElementById('c_hoursEnabled').checked;
       siteContent.workingHours.text = document.getElementById('c_hoursText').value;
 

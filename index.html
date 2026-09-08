@@ -208,7 +208,7 @@
     <a href="favorites.html" class="cart-link">♥ Обране <span class="cart-badge" id="favBadge">0</span></a>
     <a href="cart.html" class="cart-link">Кошик <span class="cart-badge" id="cartBadge">0</span></a>
     <a href="delivery.html">Доставка</a>
-    <a href="https://t.me/твій_нік_тут" class="nav-cta">💬 Написати нам</a>
+    <a href="#" id="managerCtaLink" class="nav-cta" target="_blank">💬 Написати нам</a>
   </div>
 </nav>
 <div class="promo-banner">🔥 <span class="cone-text">Знижка тижня</span> — до −16% на топ-моделі · оплата при отриманні · доставка по всій Україні</div>
@@ -302,8 +302,10 @@
 <footer>
   <div class="logo">KICKS<span>.UA</span></div>
   <div class="foot-links">
-    <a href="https://t.me/твій_нік_тут">Telegram-канал</a>
+    <a href="#" id="footerTelegramLink" target="_blank">Telegram-канал</a>
     <a href="delivery.html">Доставка і оплата</a>
+    <a href="contacts.html">Контакти</a>
+    <a href="privacy.html">Політика конфіденційності</a>
   </div>
 </footer>
 
@@ -507,7 +509,7 @@
     try {
       const res = await fetch('site-content.json?_=' + Date.now());
       const data = await res.json();
-      const banners = (data.banners || []).filter(b => b.enabled !== false);
+      const banners = (data.banners || []).filter(b => b.enabled !== false && (!b.pages || b.pages.includes('index')));
       if (banners.length === 0) return;
 
       const carousel = document.getElementById('bannerCarousel');
@@ -575,6 +577,24 @@
 
   renderCatalog();
   loadBanners();
+
+  // Підставляємо реальне посилання на Telegram-менеджера з site-content.json
+  (async function() {
+    try {
+      const res = await fetch('site-content.json?_=' + Date.now());
+      const data = await res.json();
+      if (data.contacts && data.contacts.telegramHandle) {
+        const tgUrl = 'https://t.me/' + data.contacts.telegramHandle;
+        const managerBtn = document.getElementById('managerCtaLink');
+        const footerLink = document.getElementById('footerTelegramLink');
+        if (managerBtn) managerBtn.href = tgUrl;
+        if (footerLink) footerLink.href = tgUrl;
+      }
+    } catch (err) {
+      console.warn('Не вдалося завантажити Telegram-посилання:', err);
+    }
+  })();
+
 </script>
 
 </body>

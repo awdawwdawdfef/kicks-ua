@@ -143,6 +143,22 @@
     form.order-form .row2{grid-template-columns:1fr;}
     .manager-cta{flex-direction:column;align-items:flex-start;}
   }
+  .banner-carousel{position:relative;margin:0 6% 24px;overflow:hidden;border:2px solid var(--asphalt);}
+  .banner-track{display:flex;transition:transform 0.5s ease;}
+  .banner-slide{min-width:100%;aspect-ratio:16/5;position:relative;text-decoration:none;display:block;}
+  .banner-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+  .banner-slide .banner-title{
+    position:absolute;bottom:0;left:0;right:0;padding:16px 20px;
+    background:linear-gradient(transparent, rgba(35,35,32,0.85));
+    color:var(--chalk);font-family:'Archivo Black',sans-serif;font-size:clamp(16px,2.4vw,24px);
+  }
+  .banner-dots{position:absolute;bottom:10px;right:16px;display:flex;gap:6px;}
+  .banner-dots button{
+    width:8px;height:8px;border-radius:50%;border:1.5px solid var(--chalk);background:transparent;
+    cursor:pointer;padding:0;
+  }
+  .banner-dots button.active{background:var(--chalk);}
+  @media (max-width:600px){.banner-slide{aspect-ratio:16/9;}}
 </style>
 </head>
 <body>
@@ -156,6 +172,10 @@
     <a href="delivery.html">Доставка</a>
   </div>
 </nav>
+<div class="banner-carousel" id="bannerCarousel" style="display:none;">
+  <div class="banner-track" id="bannerTrack"></div>
+  <div class="banner-dots" id="bannerDots"></div>
+</div>
 
 <section class="order-page">
   <span class="label">Крок останній</span>
@@ -164,7 +184,7 @@
 
   <div class="manager-cta">
     <p>Є питання перед замовленням? Просто напиши напряму.</p>
-    <a href="https://t.me/твій_нік_тут" target="_blank">Зв'язатися з менеджером</a>
+    <a href="#" id="managerCtaLink" target="_blank">Зв'язатися з менеджером</a>
   </div>
 
   <div id="cartSummarySection"><div class="label">Завантаження...</div></div>
@@ -187,6 +207,17 @@
       </div>
       <span class="label">Телефон</span>
       <input type="tel" name="phone" placeholder="+380 __ ___ __ __" required>
+    </fieldset>
+
+    <fieldset>
+      <legend>Доставка</legend>
+
+      <span class="label">Служба доставки</span>
+      <select name="carrier" id="carrierSelect" required>
+        <option value="">Оберіть службу</option>
+        <option value="Нова пошта">Нова пошта</option>
+        <option value="Укрпошта">Укрпошта</option>
+      </select>
 
       <span class="label">Як зручніше уточнити деталі замовлення?</span>
       <select name="contactMethod" id="contactMethodSelect">
@@ -200,17 +231,6 @@
         <span class="label">Нікнейм у Telegram (необов'язково, якщо вказали телефон)</span>
         <input type="text" name="telegramUsername" placeholder="@nickname">
       </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Доставка</legend>
-
-      <span class="label">Служба доставки</span>
-      <select name="carrier" id="carrierSelect" required>
-        <option value="">Оберіть службу</option>
-        <option value="Нова пошта">Нова пошта</option>
-        <option value="Укрпошта">Укрпошта</option>
-      </select>
 
       <span class="label">Тип отримання</span>
       <select name="deliveryType" id="deliveryTypeSelect" required>
@@ -432,7 +452,28 @@
     }
   });
 
+  function updateContactMethodOptions() {
+    const noNeedOption = contactMethodSelect.querySelector('option[value="Не потрібно уточнювати"]');
+    if (carrierSelect.value === 'Укрпошта') {
+      if (noNeedOption) {
+        if (contactMethodSelect.value === 'Не потрібно уточнювати') {
+          contactMethodSelect.value = 'Telegram';
+        }
+        noNeedOption.remove();
+      }
+    } else {
+      if (!noNeedOption) {
+        const opt = document.createElement('option');
+        opt.value = 'Не потрібно уточнювати';
+        opt.textContent = 'Не потрібно уточнювати';
+        contactMethodSelect.appendChild(opt);
+      }
+    }
+  }
+
   carrierSelect.addEventListener('change', function() {
+    updateContactMethodOptions();
+
     if (deliveryTypeSelect.value && deliveryTypeSelect.value !== "Кур'єром за адресою") {
       updateBranchFieldForCarrier();
       if (this.value !== 'Нова пошта' || !proxyConfigured) {
@@ -485,6 +526,28 @@
     }, 400);
   });
 
+  let lastWarehousesData = []; // кешуємо всі відділення для поточного міста, щоб перефільтровувати без повторного запиту
+
+  function renderFilteredWarehouses() {
+    const category = deliveryTypeSelect.value === 'У поштомат' ? 'Postomat' : 'Branch';
+    const filtered = lastWarehousesData.filter(w => w.CategoryOfWarehouse === category);
+
+    branchSelect.innerHTML = '<option value="">Оберіть відділення</option>';
+    filtered.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w.Description;
+      opt.textContent = w.Description;
+      branchSelect.appendChild(opt);
+    });
+
+    if (filtered.length === 0 && lastWarehousesData.length > 0) {
+      const typeLabel = category === 'Postomat' ? 'поштоматів' : 'відділень';
+      cityHint.textContent = `У цьому місті немає ${typeLabel} Нової пошти — спробуй обрати інший тип отримання.`;
+    } else {
+      cityHint.textContent = `Знайдено: ${filtered.length}`;
+    }
+  }
+
   cityInput.addEventListener('change', async function () {
     if (!proxyConfigured || carrierSelect.value !== 'Нова пошта') return;
     const ref = cityRefMap[this.value];
@@ -494,17 +557,18 @@
     try {
       const res = await fetch(`${NOVA_POSHTA_PROXY}?method=warehouses&cityRef=${encodeURIComponent(ref)}`);
       const json = await res.json();
-      branchSelect.innerHTML = '<option value="">Оберіть відділення</option>';
-      (json.data || []).forEach(w => {
-        const opt = document.createElement('option');
-        opt.value = w.Description;
-        opt.textContent = w.Description;
-        branchSelect.appendChild(opt);
-      });
-      cityHint.textContent = `Знайдено відділень: ${(json.data || []).length}`;
+      lastWarehousesData = json.data || [];
+      renderFilteredWarehouses();
       lastConfirmedCity = this.value.trim();
     } catch (err) {
       cityHint.textContent = 'Не вдалося завантажити відділення.';
+    }
+  });
+
+  // Якщо після завантаження списку користувач перемкнув "У відділення" ⇄ "У поштомат" — перефільтровуємо без нового запиту
+  deliveryTypeSelect.addEventListener('change', function() {
+    if (lastWarehousesData.length > 0 && (this.value === 'У відділення' || this.value === 'У поштомат')) {
+      renderFilteredWarehouses();
     }
   });
 
@@ -625,6 +689,68 @@
       submitBtn.textContent = 'ПІДТВЕРДИТИ ЗАМОВЛЕННЯ';
     }
   });
+
+  // ===== Банери (якщо адмін додав для цієї сторінки) =====
+  let bannerIndex_order = 0;
+  async function loadBanners_order() {
+    try {
+      const res = await fetch('site-content.json?_=' + Date.now());
+      const data = await res.json();
+      const banners = (data.banners || []).filter(b => b.enabled !== false && b.pages && b.pages.includes('order'));
+      if (banners.length === 0) return;
+
+      const carousel = document.getElementById('bannerCarousel');
+      const track = document.getElementById('bannerTrack');
+      const dots = document.getElementById('bannerDots');
+      if (!carousel) return;
+
+      track.innerHTML = banners.map(b => {
+        const inner = `<img src="${b.imageUrl}" alt="${b.title || ''}">${b.title ? `<div class="banner-title">${b.title}</div>` : ''}`;
+        return b.link ? `<a href="${b.link}" class="banner-slide">${inner}</a>` : `<div class="banner-slide">${inner}</div>`;
+      }).join('');
+
+      if (banners.length > 1) {
+        dots.innerHTML = banners.map((_, i) => `<button data-i="${i}" class="${i === 0 ? 'active' : ''}"></button>`).join('');
+        dots.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.i);
+            bannerIndex_order = idx;
+            track.style.transform = `translateX(-${idx * 100}%)`;
+            dots.querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === idx));
+          });
+        });
+        setInterval(() => {
+          bannerIndex_order = (bannerIndex_order + 1) % banners.length;
+          track.style.transform = `translateX(-${bannerIndex_order * 100}%)`;
+          dots.querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === bannerIndex_order));
+        }, 5000);
+      }
+
+      carousel.style.display = 'block';
+    } catch (err) {
+      console.warn('Банери не завантажено:', err);
+    }
+  }
+  loadBanners_order();
+
+
+  // Підставляємо реальне посилання на Telegram-менеджера з site-content.json
+  (async function() {
+    try {
+      const res = await fetch('site-content.json?_=' + Date.now());
+      const data = await res.json();
+      if (data.contacts && data.contacts.telegramHandle) {
+        const tgUrl = 'https://t.me/' + data.contacts.telegramHandle;
+        const managerBtn = document.getElementById('managerCtaLink');
+        const footerLink = document.getElementById('footerTelegramLink');
+        if (managerBtn) managerBtn.href = tgUrl;
+        if (footerLink) footerLink.href = tgUrl;
+      }
+    } catch (err) {
+      console.warn('Не вдалося завантажити Telegram-посилання:', err);
+    }
+  })();
+
 </script>
 
 </body>
