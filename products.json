@@ -72,5 +72,38 @@
     ],
     "active": true,
     "createdAt": "2026-09-08T05:25:50.191Z"
+  },
+  {
+    "id": "lacoste-elite-active-black-white-mts8kf8t",
+    "brand": "Lacoste",
+    "category": "",
+    "name": "Elite Active Black White",
+    "price": 2400,
+    "oldPrice": null,
+    "badge": null,
+    "description": "Виробництво : В'єтнам\n▪️Матеріал верху  : шкіра , натуральна замша \n▪️Колір : чорний\n▪️Підошва : піна , гумовий протектор\n▪️Розміри:  41-45\n▪️Сезон :  весна / літо / осінь  \n📦Коробка Lacoste , пергамент",
+    "specs": {},
+    "sizeChart": "▫️41 = 25.5 см ; ▫️42 = 26 см ; ▫️43 = 27 см ; ▫️44 = 27,5 см ; ▫️45 = 28 см .",
+    "sizes": [
+      "41",
+      "42",
+      "43",
+      "44",
+      "45"
+    ],
+    "stock": null,
+    "images": [
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845740591-____________PNG_2.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845742397-____________PNG_3.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845744119-____________PNG.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845745753-____________PNG_4.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845747421-____________PNG_5.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845749237-____________PNG_7.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845751188-____________PNG_8.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845753233-____________PNG_9.png",
+      "images/lacoste-elite-active-black-white-mts8kf8t/1788845755025-____________PNG_6.png"
+    ],
+    "active": true,
+    "createdAt": "2026-09-08T05:35:57.118Z"
   }
 ]
