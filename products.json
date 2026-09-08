@@ -178,33 +178,5 @@
     "createdAt": "2026-08-16T12:00:00Z",
     "stock": null,
     "category": ""
-  },
-  {
-    "id": "new-balance-9060",
-    "brand": "New Balance",
-    "name": "9060",
-    "price": 3990,
-    "oldPrice": 4500,
-    "badge": "ХІТ",
-    "description": "Технологічний силует із багатошаровою підошвою в дусі Y2K-естетики. Один із найобговорюваніших релізів останніх сезонів.",
-    "specs": {},
-    "sizeChart": "",
-    "sizes": [
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45"
-    ],
-    "images": [],
-    "placeholderColor": {
-      "body": "#EDEAE3",
-      "accent": "#8A8578"
-    },
-    "active": true,
-    "createdAt": "2026-08-19T12:00:00Z",
-    "stock": null,
-    "category": ""
   }
 ]
