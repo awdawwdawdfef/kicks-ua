@@ -15,12 +15,14 @@
     .btn.secondary { background:#6b7280; }
     pre { background:#f3f4f6; padding:12px; overflow:auto; max-height:240px; }
     .status { margin-top:12px; padding:10px; background:#eef2ff; border:1px solid #c7d2fe; }
+    .inline { display:inline-block; vertical-align:middle; margin-right:8px; }
+    .muted { color:#666; font-size:0.9em; }
   </style>
 </head>
 <body>
   <h1>Импорт товаров в products.json (Admin)</h1>
 
-  <p class="small">Загрузите XML (или укажите URL), затем нажмите «Преобразовать и сохранить в репозитории». Для сохранения потребуется GitHub token с правом записи в ваш репозиторий (Contents: Read & write). Не публикуйте токен в репо.</p>
+  <p class="small">Загрузите XML (или укажите URL), затем нажмите «Преобразовать и сохранить в репозитории». Для записи требуется GitHub token (fine‑grained PAT с Contents: Read & write). Можно запомнить токен локально в браузере — он не попадёт в репозиторий.</p>
 
   <label for="xmlUrl">URL XML (опционально)</label>
   <input id="xmlUrl" type="url" placeholder="https://easydrop.one/supplier-catalog/19100792694610/0/" />
@@ -59,6 +61,11 @@
   <label for="token">GitHub Token (введите вручную)</label>
   <input id="token" type="text" placeholder="ghp_..." />
 
+  <div style="margin-top:6px;">
+    <label class="inline"><input type="checkbox" id="rememberToken"> Запомнить токен в этом браузере</label>
+    <button id="clearTokenBtn" class="btn secondary" style="padding:8px 10px; margin-left:10px;">Очистить сохранённый токен</button>
+  </div>
+
   <div style="margin-top:12px;">
     <button id="previewBtn" class="btn secondary">Предварительный просмотр JSON</button>
     <button id="importBtn" class="btn">Преобразовать и сохранить в репозитории</button>
@@ -82,6 +89,55 @@
   const limitEl = document.getElementById('limit');
   const modelThresholdEl = document.getElementById('modelThreshold');
   const variationThresholdEl = document.getElementById('variationThreshold');
+  const rememberCheckbox = document.getElementById('rememberToken');
+  const clearTokenBtn = document.getElementById('clearTokenBtn');
+
+  const LS_KEY_TOKEN = 'admin_import_github_token_v1';
+  const LS_KEY_REPO = 'admin_import_owner_repo_v1';
+  const LS_KEY_PATH = 'admin_import_path_v1';
+  const LS_KEY_BRANCH = 'admin_import_branch_v1';
+
+  // Restore saved fields
+  function restoreSaved() {
+    try {
+      const t = localStorage.getItem(LS_KEY_TOKEN);
+      if (t) { tokenEl.value = t; rememberCheckbox.checked = true; log('Загружен сохранённый токен из localStorage'); }
+      const r = localStorage.getItem(LS_KEY_REPO);
+      if (r) { repoEl.value = r; }
+      const p = localStorage.getItem(LS_KEY_PATH);
+      if (p) { pathEl.value = p; }
+      const b = localStorage.getItem(LS_KEY_BRANCH);
+      if (b) { branchEl.value = b; }
+    } catch(e) { /* ignore */ }
+  }
+
+  restoreSaved();
+
+  function saveIfNeeded() {
+    try {
+      if (rememberCheckbox.checked) {
+        if (tokenEl.value && tokenEl.value.trim()) localStorage.setItem(LS_KEY_TOKEN, tokenEl.value.trim());
+      } else {
+        localStorage.removeItem(LS_KEY_TOKEN);
+      }
+      if (repoEl.value) localStorage.setItem(LS_KEY_REPO, repoEl.value.trim());
+      if (pathEl.value) localStorage.setItem(LS_KEY_PATH, pathEl.value.trim());
+      if (branchEl.value) localStorage.setItem(LS_KEY_BRANCH, branchEl.value.trim());
+    } catch(e) {}
+  }
+
+  clearTokenBtn.onclick = function() {
+    try {
+      localStorage.removeItem(LS_KEY_TOKEN);
+      tokenEl.value = '';
+      rememberCheckbox.checked = false;
+      log('Сохранённый токен удалён из localStorage');
+      showStatus('Сохранённый токен удалён.');
+    } catch(e) {
+      log('Ошибка очистки токена: ' + e);
+      showStatus('Ошибка очистки токена.');
+    }
+  };
 
   function log(msg) {
     const t = (new Date()).toISOString();
@@ -103,7 +159,6 @@
   }
 
   function findParamValue(itemElem, paramNameLower) {
-    // itemElem.param might be NodeList
     const params = itemElem.getElementsByTagName('param');
     for (let i=0;i<params.length;i++){
       const p = params[i];
@@ -120,7 +175,6 @@
     const grouped = {};
     for (let i=0;i<items.length;i++){
       const item = items[i];
-      // try attributes or child
       let group_id = item.getAttribute('group_id') || '';
       if (!group_id) {
         const gidElem = item.getElementsByTagName('group_id')[0];
@@ -138,7 +192,6 @@
     let count = 0;
     for (const gid of Object.keys(grouped)) {
       const groupItems = grouped[gid];
-      // sum qty
       let totalQty = 0;
       for (const it of groupItems) {
         const q = parseInt(extractText(it, 'quantity_in_stock') || '0', 10);
@@ -146,7 +199,6 @@
       }
       if (modelThreshold > 0 && totalQty < modelThreshold) continue;
 
-      // filter variations by variationThreshold
       const variations = {};
       let hasStock = false;
       for (const it of groupItems) {
@@ -160,7 +212,6 @@
       }
       if (!hasStock) continue;
 
-      // build product object (take data from first item)
       const main = groupItems[0];
       const name = extractText(main, 'name') || '';
       const description = extractText(main, 'description') || '';
@@ -252,6 +303,7 @@
   document.getElementById('importBtn').onclick = async function() {
     output.textContent = '';
     try {
+      saveIfNeeded();
       const token = tokenEl.value.trim();
       const ownerRepo = repoEl.value.trim();
       const branch = branchEl.value.trim() || 'main';
@@ -267,7 +319,6 @@
         try {
           xmlText = await getXmlFromUrl(xmlUrlEl.value.trim());
         } catch (e) {
-          // CORS likely — ask user to upload file instead
           throw new Error('Не удалось загрузить URL (CORS или ошибка). Загрузите XML файл вручную.');
         }
       } else {
@@ -280,7 +331,6 @@
       if (!products || products.length===0) {
         throw new Error('Не найдено товаров для импорта (проверьте пороги или структуру XML).');
       }
-      // Prepare content
       const payload = { generated_at: (new Date()).toISOString(), source: 'easydrop', products: products };
       const contentStr = JSON.stringify(payload, null, 2);
       const contentBase64 = btoa(unescape(encodeURIComponent(contentStr)));
