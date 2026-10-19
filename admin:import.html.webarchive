@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Импорт товаров — Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:18px;max-width:1100px}
+    h1{margin-bottom:6px}
+    label{display:block;margin-top:10px;font-weight:600}
+    input[type=text], input[type=url], textarea, select { width:100%; padding:8px; box-sizing:border-box; }
+    .row{display:flex;gap:10px}
+    .col{flex:1}
+    .btn{margin-top:10px;padding:8px 12px;background:#0b5fff;color:#fff;border:none;cursor:pointer}
+    .btn.secondary{background:#6b7280}
+    pre{background:#f3f4f6;padding:10px;overflow:auto;max-height:240px}
+    .status{margin-top:12px;padding:10px;background:#eef2ff;border:1px solid #c7d2fe}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid #ddd;padding:6px;text-align:left}
+    .edit-btn{background:#059669;color:#fff;padding:6px 8px;border:none;cursor:pointer}
+    .small{font-size:0.9em;color:#666}
+    #modal{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center}
+    #modal .box{background:#fff;padding:16px;width:680px;max-height:90vh;overflow:auto;border-radius:6px}
+    .form-row{display:flex;gap:8px}
+    .form-row > *{flex:1}
+  </style>
+</head>
+<body>
+  <a href="/admin/" style="display:inline-block;margin-bottom:12px;">← Вернуться в админ‑панель</a>
+  <h1>Импорт товаров в products.json</h1>
+  <p class="small">Загрузите XML (или укажите URL). Нажмите «Preview». Для сохранения в репо потребуется GitHub token (PAT). Токен можно запомнить локально в браузере (localStorage).</p>
+
+  <label>URL XML (опционально)</label>
+  <input id="xmlUrl" type="url" placeholder="https://easydrop.one/..." />
+
+  <label>Или загрузите XML файл</label>
+  <input id="xmlFile" type="file" accept=".xml" />
+
+  <div class="row">
+    <div class="col">
+      <label>Лимит моделей (0 — без лимита)</label>
+      <input id="limit" type="number" value="0" min="0" />
+    </div>
+    <div style="width:180px">
+      <label>Порог модели</label>
+      <input id="modelThreshold" type="number" value="1" min="0" />
+    </div>
+    <div style="width:180px">
+      <label>Порог вариаций</label>
+      <input id="variationThreshold" type="number" value="1" min="0" />
+    </div>
+  </div>
+
+  <label>Куда сохранять (GitHub)</label>
+  <div class="row">
+    <div class="col"><input id="repo" type="text" placeholder="owner/repo (например awdawwdawdfef/kicks-ua)"></div>
+    <div style="width:140px"><input id="branch" type="text" value="main"></div>
+    <div style="width:320px"><input id="path" type="text" value="site-content/products.json"></div>
+  </div>
+
+  <label>GitHub Token</label>
+  <input id="token" type="text" placeholder="Введите PAT (ghp_...)" />
+  <div style="margin-top:6px">
+    <label><input type="checkbox" id="rememberToken"> Запомнить токен в браузере</label>
+    <button id="clearToken" class="btn secondary" style="margin-left:10px">Очистить сохранённый токен</button>
+  </div>
+
+  <div style="margin-top:12px">
+    <button id="preview" class="btn secondary">Предварительный просмотр</button>
+    <button id="save" class="btn">Преобразовать и сохранить в репозитории</button>
+  </div>
+
+  <div id="status" class="status" style="display:none"></div>
+
+  <h3>Preview / Список найденных товаров</h3>
+  <div id="previewArea"></div>
+
+  <h3>Лог</h3>
+  <pre id="log">Здесь будут логи...</pre>
+
+  <!-- Modal для редактирования -->
+  <div id="modal">
+    <div class="box">
+      <h3>Редактировать товар</h3>
+      <div id="modalForm"></div>
+      <div style="margin-top:8px;text-align:right;">
+        <button id="modalCancel" class="btn secondary">Отмена</button>
+        <button id="modalSave" class="btn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const xmlUrlEl = document.getElementById('xmlUrl');
+  const xmlFileEl = document.getElementById('xmlFile');
+  const limitEl = document.getElementById('limit');
+  const modelThresholdEl = document.getElementById('modelThreshold');
+  const variationThresholdEl = document.getElementById('variationThreshold');
+  const repoEl = document.getElementById('repo');
+  const branchEl = document.getElementById('branch');
+  const pathEl = document.getElementById('path');
+  const tokenEl = document.getElementById('token');
+  const rememberEl = document.getElementById('rememberToken');
+  const clearTokenBtn = document.getElementById('clearToken');
+  const previewBtn = document.getElementById('preview');
+  const saveBtn = document.getElementById('save');
+  const status = document.getElementById('status');
+  const logEl = document.getElementById('log');
+  const previewArea = document.getElementById('previewArea');
+  const modal = document.getElementById('modal');
+  const modalForm = document.getElementById('modalForm');
+  const modalCancel = document.getElementById('modalCancel');
+  const modalSave = document.getElementById('modalSave');
+
+  const LS_TOKEN = 'import_admin_token_v1';
+  const LS_REPO = 'import_admin_repo_v1';
+  const LS_PATH = 'import_admin_path_v1';
+  const LS_BRANCH = 'import_admin_branch_v1';
+
+  let PRODUCTS = [];
+  let editIndex = null;
+
+  function log(msg){
+    const t = new Date().toISOString();
+    logEl.textContent = `[${t}] ${msg}\n` + logEl.textContent;
+  }
+  function showStatus(msg){
+    status.style.display = 'block';
+    status.textContent = msg;
+  }
+
+  // restore saved
+  try{
+    const t = localStorage.getItem(LS_TOKEN); if(t){ tokenEl.value = t; rememberEl.checked = true; log('Загружен токен из localStorage'); }
+    const r = localStorage.getItem(LS_REPO); if(r) repoEl.value = r;
+    const p = localStorage.getItem(LS_PATH); if(p) pathEl.value = p;
+    const b = localStorage.getItem(LS_BRANCH); if(b) branchEl.value = b;
+  }catch(e){}
+
+  clearTokenBtn.onclick = function(){
+    try{ localStorage.removeItem(LS_TOKEN); tokenEl.value=''; rememberEl.checked=false; log('Сохранённый токен удалён'); showStatus('Сохранённый токен удалён'); }catch(e){ log('Ошибка удаления токена: '+e); }
+  };
+
+  function parseXml(xmlText){
+    const p = new DOMParser();
+    return p.parseFromString(xmlText, 'application/xml');
+  }
+
+  function extractText(elem, tag){
+    const node = elem.getElementsByTagName(tag)[0];
+    return node ? node.textContent.trim() : '';
+  }
+
+  function findParam(itemElem, nameLower){
+    const params = itemElem.getElementsByTagName('param');
+    for(let i=0;i<params.length;i++){
+      const p = params[i];
+      const nm = (p.getAttribute('name')||'').toLowerCase();
+      if(nm.indexOf(nameLower)!==-1) return p.textContent.trim();
+    }
+    return '';
+  }
+
+  function buildProducts(doc){
+    const items = doc.getElementsByTagName('item');
+    const grouped = {};
+    for(let i=0;i<items.length;i++){
+      const it = items[i];
+      let gid = it.getAttribute('group_id') || '';
+      if(!gid){
+        const g = it.getElementsByTagName('group_id')[0];
+        gid = g ? g.textContent.trim() : '';
+      }
+      if(!gid) continue;
+      (grouped[gid] || (grouped[gid]=[])).push(it);
+    }
+    const res = [];
+    const modelTh = parseInt(modelThresholdEl.value||'1',10)||0;
+    const varTh = parseInt(variationThresholdEl.value||'1',10)||0;
+    const limit = parseInt(limitEl.value||'0',10)||0;
+    let cnt=0;
+    for(const gid of Object.keys(grouped)){
+      const group = grouped[gid];
+      let totalQty=0;
+      for(const it of group) totalQty += parseInt(extractText(it,'quantity_in_stock')||'0',10);
+      if(modelTh>0 && totalQty < modelTh) continue;
+      const variations = {};
+      let hasStock = false;
+      for(const it of group){
+        const size = findParam(it,'розмір') || findParam(it,'size');
+        if(!size) continue;
+        const qty = parseInt(extractText(it,'quantity_in_stock')||'0',10);
+        if(qty < varTh) continue;
+        const price = extractText(it,'priceuah') || extractText(it,'price') || '';
+        variations[size] = { qty: qty, price: price, status: qty>0?'instock':'outofstock' };
+        if(qty>0) hasStock=true;
+      }
+      if(!hasStock) continue;
+      const main = group[0];
+      const name = extractText(main,'name') || '';
+      const desc = extractText(main,'description') || '';
+      const img = extractText(main,'image') || '';
+      const cat = extractText(main,'categoryId') || '';
+      res.push({
+        group_id: gid,
+        name: name,
+        description: desc,
+        images: img? [img] : [],
+        category: cat,
+        variations: variations,
+        total_qty: Object.values(variations).reduce((s,v)=>s+(v.qty||0),0),
+        imported_at: (new Date()).toISOString(),
+        source: 'easydrop'
+      });
+      cnt++;
+      if(limit>0 && cnt>=limit) break;
+    }
+    return res;
+  }
+
+  async function getXmlFromUrl(url){
+    showStatus('Запрос URL (может блокироваться CORS) ...');
+    const r = await fetch(url, {mode:'cors'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.text();
+  }
+
+  previewBtn.onclick = async function(){
+    try{
+      let xmlText='';
+      if(xmlFileEl.files && xmlFileEl.files.length>0){
+        xmlText = await xmlFileEl.files[0].text();
+      } else if(xmlUrlEl.value.trim()){
+        xmlText = await getXmlFromUrl(xmlUrlEl.value.trim());
+      } else { alert('Укажите URL или загрузите файл'); return; }
+      const doc = parseXml(xmlText);
+      PRODUCTS = buildProducts(doc);
+      showStatus('Найдено товаров: '+PRODUCTS.length);
+      renderPreview();
+      log('Preview ready, products='+PRODUCTS.length);
+    }catch(e){
+      log('Preview error: '+e);
+      showStatus('Ошибка: '+e.message);
+    }
+  };
+
+  function renderPreview(){
+    if(!PRODUCTS || PRODUCTS.length===0){ previewArea.innerHTML='<p>Нет товаров для отображения</p>'; return; }
+    let html = '<table><thead><tr><th>Group ID</th><th>Название</th><th>Total</th><th>Sizes</th><th>Действие</th></tr></thead><tbody>';
+    PRODUCTS.forEach((p,i)=>{
+      const sizes = Object.keys(p.variations||{}).join(', ');
+      html += `<tr><td>${p.group_id}</td><td>${escapeHtml(p.name)}</td><td>${p.total_qty}</td><td>${escapeHtml(sizes)}</td><td><button class="edit-btn" data-index="${i}">Edit</button></td></tr>`;
+    });
+    html += '</tbody></table>';
+    previewArea.innerHTML = html;
+    const edits = previewArea.querySelectorAll('.edit-btn');
+    edits.forEach(btn => btn.addEventListener('click', (e)=>{
+      const idx = parseInt(e.currentTarget.getAttribute('data-index'),10);
+      openEditModal(idx);
+    }));
+  }
+
+  function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function openEditModal(index){
+    editIndex = index;
+    const p = PRODUCTS[index];
+    const html = `
+      <label>Group ID</label><div><input id="m_group" type="text" value="${escapeHtml(p.group_id)}" readonly></div>
+      <label>Title</label><div><input id="m_name" type="text" value="${escapeHtml(p.name)}"></div>
+      <label>Description</label><div><textarea id="m_desc" style="width:100%;height:80px">${escapeHtml(p.description)}</textarea></div>
+      <label>Images (one per line)</label><div><textarea id="m_imgs" style="width:100%;height:60px">${(p.images||[]).join('\n')}</textarea></div>
+      <label>Variations (size,qty,price — one per line)</label>
+      <div><textarea id="m_vars" style="width:100%;height:120px">${Object.entries(p.variations||{}).map(([s,v])=>`${s},${v.qty||0},${v.price||''}`).join('\n')}</textarea></div>
+    `;
+    modalForm.innerHTML = html;
+    modal.style.display = 'flex';
+  }
+
+  modalCancel.onclick = function(){ modal.style.display='none'; editIndex=null; };
+
+  modalSave.onclick = function(){
+    if(editIndex===null) return;
+    const p = PRODUCTS[editIndex];
+    p.name = document.getElementById('m_name').value;
+    p.description = document.getElementById('m_desc').value;
+    p.images = document.getElementById('m_imgs').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    const varsText = document.getElementById('m_vars').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    const vobj = {};
+    varsText.forEach(line=>{
+      const parts = line.split(',');
+      const size = parts[0].trim();
+      const qty = parseInt(parts[1]||'0',10) || 0;
+      const price = parts[2] ? parts.slice(2).join(',').trim() : '';
+      vobj[size] = { qty: qty, price: price, status: qty>0?'instock':'outofstock' };
+    });
+    p.variations = vobj;
+    p.total_qty = Object.values(vobj).reduce((s,v)=>s+(v.qty||0),0);
+    p.imported_at = (new Date()).toISOString();
+    PRODUCTS[editIndex] = p;
+    modal.style.display='none';
+    editIndex=null;
+    renderPreview();
+    log('Product edited locally: '+p.group_id);
+  };
+
+  async function getSha(ownerRepo, filePath, branch, token){
+    const url = `https://api.github.com/repos/${ownerRepo}/contents/${encodeURIComponent(filePath)}?ref=${encodeURIComponent(branch)}`;
+    const r = await fetch(url, { headers: { Authorization: 'token '+token, Accept: 'application/vnd.github.v3+json' }});
+    if(r.status===200){ const j = await r.json(); return j.sha; }
+    return null;
+  }
+  async function putFile(ownerRepo, filePath, branch, token, contentBase64, message, sha){
+    const url = `https://api.github.com/repos/${ownerRepo}/contents/${encodeURIComponent(filePath)}`;
+    const body = { message: message, content: contentBase64, branch: branch };
+    if(sha) body.sha = sha;
+    const r = await fetch(url, { method:'PUT', headers:{ Authorization:'token '+token, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if(!r.ok) throw new Error('GitHub API: '+(j && j.message ? j.message : r.status));
+    return j;
+  }
+
+  saveBtn.onclick = async function(){
+    try{
+      try{ if(rememberEl.checked && tokenEl.value.trim()) localStorage.setItem(LS_TOKEN, tokenEl.value.trim()); else localStorage.removeItem(LS_TOKEN); }catch(e){}
+      if(!PRODUCTS || PRODUCTS.length===0) { alert('Нет данных. Сначала сделайте Preview.'); return; }
+      const token = tokenEl.value.trim();
+      const ownerRepo = repoEl.value.trim();
+      const branch = branchEl.value.trim() || 'main';
+      const path = pathEl.value.trim() || 'site-content/products.json';
+      if(!token || !ownerRepo) { alert('Введите GitHub token и owner/repo'); return; }
+      const payload = { generated_at:(new Date()).toISOString(), source:'easydrop', products: PRODUCTS };
+      const contentStr = JSON.stringify(payload, null, 2);
+      const base64 = btoa(unescape(encodeURIComponent(contentStr)));
+      showStatus('Проверяем существующий файл...');
+      const sha = await getSha(ownerRepo, path, branch, token);
+      log('Existing sha: '+(sha||'none'));
+      showStatus('Коммитим файл в репозиторий...');
+      const message = 'Import products.json — update '+(new Date()).toISOString();
+      const res = await putFile(ownerRepo, path, branch, token, base64, message, sha);
+      log('Saved: '+(res.content && res.content.path ? res.content.path : 'ok'));
+      showStatus('Сохранено: ' + (res.content && res.content.path ? res.content.path : path));
+      alert('Сохранено в репозитории.');
+    }catch(e){
+      log('Save error: '+e);
+      showStatus('Ошибка: '+(e.message||e));
+    }
+  };
+
+})();
+</script>
+</body>
+</html>

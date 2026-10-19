@@ -1,0 +1,4 @@
+<!-- admin/sidebar.htm — фрагмент меню: вставьте его в ваш шаблон меню -->
+<li class="nav-item">
+  <a class="nav-link" href="/admin/import.html">Импорт товаров</a>
+</li>
